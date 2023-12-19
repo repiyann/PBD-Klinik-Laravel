@@ -103,18 +103,18 @@
             <img src="{{ asset('assets/img/home-image.svg') }}" alt="">
         </div>
     </div>
-    <section id="menu">
-        <div class="px-5 z-[900] py-20 flex dark:bg-gray-950 justify-center flex-col items-center md:pt-5 md:pb-12 md:px-[132px]">
+    <section id="menu" class="py-20 bg-gray-950">
+        <div class="px-5 z-[900] flex dark:bg-gray-950 justify-center flex-col items-center md:pt-5 md:pb-12 md:px-[132px]">
             <h1 class="text-4xl mb-5 font-semibold text-center dark:text-white">
                 Menu
             </h1>
 
             <!-- Carousel -->
-            <div class="bg-teal-100 flex flex-col justify-center items-center">
-                <div class="max-w-4xl mx-auto relative" x-data="{ activeSlide: 1, slides: [1, 2, 3, 4] }">
+            <div class="dark:bg-gray-950 flex flex-col justify-center items-center">
+                <div class="mx-auto relative" x-data="{ activeSlide: 1, slides: [1, 2, 3, 4] }">
                     <!-- Slides -->
                     <template x-for="slide in slides" :key="slide">
-                        <div x-show="activeSlide === slide" class="p-24 font-bold text-5xl h-64 flex items-center bg-[#9333ea] text-white rounded-lg">
+                        <div x-show="activeSlide === slide" class="p-16 md:p-56 font-bold text-5xl h-64 flex items-center = bg-[#9333ea] text-white rounded-lg">
                             <span class="w-12 text-center" x-text="slide"></span>
                             <span class="text-teal-300">/</span>
                             <span class="w-12 text-center" x-text="slides.length"></span>
