@@ -18,7 +18,7 @@
     <!-- Check Responsiveness of a Page -->
 
     <!-- NavBar Start -->
-    <nav class="bg-white dark:bg-gray-950 shadow-lg dark:shadow-gray-900 sticky top-0">
+    <nav class="bg-white dark:bg-gray-950 shadow-lg dark:shadow-gray-900 sticky top-0 z-[1000]">
         <div class="pt-3 md:px-28 md:py-5" x-data="{ showMenu: false }">
             <div :class="showMenu ? 'px-5' : 'px-5'">
                 <div class="flex justify-between pb-3 md:p-0" :class="showMenu && 'border-b-2'">
@@ -104,10 +104,45 @@
         </div>
     </div>
     <section id="menu">
-        <div class="px-5 py-20 flex dark:bg-gray-950 justify-center items-center md:pt-5 md:pb-12 md:px-[132px]">
+        <div class="px-5 z-[900] py-20 flex dark:bg-gray-950 justify-center flex-col items-center md:pt-5 md:pb-12 md:px-[132px]">
             <h1 class="text-4xl mb-5 font-semibold text-center dark:text-white">
                 Menu
             </h1>
+
+            <!-- Carousel -->
+            <div class="bg-teal-100 flex flex-col justify-center items-center">
+                <div class="max-w-4xl mx-auto relative" x-data="{ activeSlide: 1, slides: [1, 2, 3, 4] }">
+                    <!-- Slides -->
+                    <template x-for="slide in slides" :key="slide">
+                        <div x-show="activeSlide === slide" class="p-24 font-bold text-5xl h-64 flex items-center bg-[#9333ea] text-white rounded-lg">
+                            <span class="w-12 text-center" x-text="slide"></span>
+                            <span class="text-teal-300">/</span>
+                            <span class="w-12 text-center" x-text="slides.length"></span>
+                        </div>
+                    </template>
+
+                    <!-- Prev/Next Arrows -->
+                    <div class="absolute inset-0 flex">
+                        <div class="flex items-center justify-start w-1/2">
+                            <button class="bg-[#dfc2f9] text-[#9333ea] hover:text-[#4c1b7a] font-bold hover:shadow-lg rounded-full w-12 h-12 -ml-6" x-on:click="activeSlide = activeSlide === 1 ? slides.length : activeSlide - 1">
+                                <i class="fa-solid fa-arrow-left"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-end w-1/2">
+                            <button class="bg-[#dfc2f9] text-[#9333ea] hover:text-[#4c1b7a] font-bold hover:shadow rounded-full w-12 h-12 -mr-6" x-on:click="activeSlide = activeSlide === slides.length ? 1 : activeSlide + 1">
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="absolute w-full flex items-center justify-center px-4">
+                        <template x-for="slide in slides" :key="slide">
+                            <button class="flex-1 w-4 h-2 mt-4 mx-2 mb-0 rounded-full overflow-hidden transition-colors duration-200 ease-out hover:bg-[#4c1b7a] hover:shadow-lg" :class="{ 'bg-[#9333ea]': activeSlide === slide, 'bg-[#dfc2f9]': activeSlide !== slide }" x-on:click="activeSlide = slide"></button>
+                        </template>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
     <section id="about">
