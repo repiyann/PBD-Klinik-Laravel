@@ -113,26 +113,27 @@
             </h1>
 
             <!-- Carousel -->
-            <div class="flex flex-col justify-center items-center">
-                <div class="mx-auto relative" x-data="{ activeSlide: 1, slides: [1, 2, 3, 4] }">
+            <div class="px-5 flex flex-col justify-center items-center">
+                <div class="mx-auto relative" x-data="imageCarousel" x-init="loadImages()">
                     <!-- Slides -->
-                    <template x-for="slide in slides" :key="slide">
-                        <div x-show="activeSlide === slide" class="p-16 md:p-56 font-bold text-5xl h-64 flex items-center = bg-[#9333ea] text-white rounded-lg">
-                            <span class="w-12 text-center" x-text="slide"></span>
-                            <span class="text-teal-300">/</span>
-                            <span class="w-12 text-center" x-text="slides.length"></span>
+                    <template x-for="(slide, index) in slides" :key="index">
+                        <div x-show="activeSlide === index" class="relative">
+                            <img :src="slide.image" alt="Slide Image" class="w-full h-64 object-cover rounded-lg">
+                            <div class="absolute bottom-0 left-0 right-0 rounded-b-lg bg-black bg-opacity-50 text-white p-4 text-center">
+                                <h3 class="text-lg font-semibold" x-text="slide.description"></h3>
+                            </div>
                         </div>
                     </template>
 
                     <!-- Prev/Next Arrows -->
                     <div class="absolute inset-0 flex">
                         <div class="flex items-center justify-start w-1/2">
-                            <button class="bg-[#dfc2f9] text-[#9333ea] hover:text-[#4c1b7a] font-bold hover:shadow-lg rounded-full w-12 h-12 -ml-6" x-on:click="activeSlide = activeSlide === 1 ? slides.length : activeSlide - 1">
+                            <button class="bg-[#dfc2f9] text-[#9333ea] hover:text-[#4c1b7a] font-bold hover:shadow-lg rounded-full w-12 h-12 -ml-6" x-on:click="prevSlide">
                                 <i class="fa-solid fa-arrow-left"></i>
                             </button>
                         </div>
                         <div class="flex items-center justify-end w-1/2">
-                            <button class="bg-[#dfc2f9] text-[#9333ea] hover:text-[#4c1b7a] font-bold hover:shadow rounded-full w-12 h-12 -mr-6" x-on:click="activeSlide = activeSlide === slides.length ? 1 : activeSlide + 1">
+                            <button class="bg-[#dfc2f9] text-[#9333ea] hover:text-[#4c1b7a] font-bold hover:shadow rounded-full w-12 h-12 -mr-6" x-on:click="nextSlide">
                                 <i class="fa-solid fa-arrow-right"></i>
                             </button>
                         </div>
@@ -140,12 +141,13 @@
 
                     <!-- Buttons -->
                     <div class="absolute w-full flex items-center justify-center px-4">
-                        <template x-for="slide in slides" :key="slide">
-                            <button class="flex-1 w-4 h-2 mt-4 mx-2 mb-0 rounded-full overflow-hidden transition-colors duration-200 ease-out hover:bg-[#4c1b7a] hover:shadow-lg" :class="{ 'bg-[#9333ea]': activeSlide === slide, 'bg-[#dfc2f9]': activeSlide !== slide }" x-on:click="activeSlide = slide"></button>
+                        <template x-for="(slide, index) in slides" :key="index">
+                            <button class="flex-1 w-4 h-2 mt-4 mx-2 mb-0 rounded-full overflow-hidden transition-colors duration-200 ease-out hover:bg-[#4c1b7a] hover:shadow-lg" :class="{ 'bg-[#9333ea]': activeSlide === index, 'bg-[#dfc2f9]': activeSlide !== index }" x-on:click="activeSlide = index"></button>
                         </template>
                     </div>
                 </div>
             </div>
+            
         </div>
     </section>
     <section id="about">
@@ -175,6 +177,32 @@
     </section>
     <!-- Hero End -->
 
+    <!-- Carousel Script -->
+    <script>
+        const imageCarousel = () => ({
+            activeSlide: 0,
+            slides: [],
+
+            loadImages() {
+                this.slides = [
+                    {image: 'assets/img/steam.png', description: 'Combo'},
+                    {image: 'https://picsum.photos/id/1015/800/401', description: 'Ala Carte'},
+                    {image: 'https://picsum.photos/id/1025/800/402', description: 'Drink'},
+                    {image: 'https://picsum.photos/id/1019/800/403', description: 'Snack'},
+                ];
+            },
+
+            nextSlide() {
+                this.activeSlide = (this.activeSlide + 1) % this.slides.length;
+            },
+
+            prevSlide() {
+                this.activeSlide = (this.activeSlide - 1 + this.slides.length) % this.slides.length;
+            },
+        });
+
+        // Alpine.data('imageCarousel', imageCarousel); <- possibly in use
+    </script>
 </body>
 
 </html>
