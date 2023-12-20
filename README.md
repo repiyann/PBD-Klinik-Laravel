@@ -1,6 +1,6 @@
 # Ka-Chew Fried Chicken
 
-![Image](https://github.com/repiyann/Laravel_PTI/assets/92260886/04b4fa5a-7234-432a-9265-39ea69089b99)
+![Image](https://github.com/repiyann/Laravel_PTI/assets/92260886/b63ea063-04f7-40a8-b27f-8366a34e5993)
 
 ## Description
 
