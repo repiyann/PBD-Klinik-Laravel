@@ -52,8 +52,8 @@
                             </svg>
                         </button>
 
-                        <a href="#menu" class="px-3 text-lg font-semibold dark:text-white"> Menu </a>
-                        <a href="#about" class="pl-3 pr-5 text-lg font-semibold dark:text-white"> About Us </a>
+                        <a href="#menu" class="px-3 text-lg font-semibold dark:hover:text-[#9333ea] dark:text-white"> Menu </a>
+                        <a href="#about" class="pl-3 pr-5 text-lg font-semibold dark:hover:text-[#9333ea] dark:text-white"> About Us </a>
                         <a href="#" class="px-5 py-2 text-white text-lg font-semibold bg-[#9333ea] rounded-lg hover:bg-[#4c1b7a] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"> Order Now </a>
                     </div>
                 </div>
@@ -64,13 +64,16 @@
                 <div class="absolute md:hidden bg-white dark:bg-gray-950 shadow-lg dark:shadow-gray-900 w-full justify-center text-center">
                     <ul class="px-5">
                         <li class="pt-2">
+                            <a href="#" class="text-lg font-semibold dark:text-white"> Home </a>
+                        </li>
+                        <li class="">
                             <a href="#menu" class="text-lg font-semibold dark:text-white"> Menu </a>
                         </li>
                         <li class="">
                             <a href="#about" class="text-lg font-semibold dark:text-white"> About Us </a>
                         </li>
                         <li class="pt-2 pb-5 border-b-2">
-                            <a href="#" class="bg-[#9333ea] px-2 py-1 rounded-lg text-lg font-semibold text-white"> Order Now </a>
+                            <a href="#" class="bg-[#9333ea] px-4 py-1 rounded-lg text-lg font-semibold text-white"> Order Now </a>
                         </li>
                         <li class="py-2">
                             <!-- Toggle for dark mode in mobile -->
@@ -95,7 +98,7 @@
     <div class="px-5 py-40 flex dark:bg-gray-950 justify-center items-center md:py-5 md:px-[132px] md:grid md:grid-cols-2 md:gap-10">
         <div class="col-start-1 col-end-1 m-auto">
             <h1 class="text-4xl font-semibold mb-5 dark:text-white">
-                Ka-Chew Fried Chicken — Where Flavor Meets Velocity!
+                <font style="color: #9333ea;"> Ka-Chew Fried Chicken </font> — Where Flavor Meets Velocity!
             </h1>
             <a href="#" class="px-5 py-2 text-white text-lg font-semibold bg-[#9333ea] rounded-lg hover:bg-[#4c1b7a] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"> Order Now </a>
         </div>
@@ -103,14 +106,14 @@
             <img src="{{ asset('assets/img/home-image.svg') }}" alt="">
         </div>
     </div>
-    <section id="menu" class="py-20 bg-gray-950">
+    <section id="menu" class="py-20 dark:bg-gray-950 bg-white">
         <div class="px-5 z-[900] flex dark:bg-gray-950 justify-center flex-col items-center md:pt-5 md:pb-12 md:px-[132px]">
             <h1 class="text-4xl mb-5 font-semibold text-center dark:text-white">
                 Menu
             </h1>
 
             <!-- Carousel -->
-            <div class="dark:bg-gray-950 flex flex-col justify-center items-center">
+            <div class="flex flex-col justify-center items-center">
                 <div class="mx-auto relative" x-data="{ activeSlide: 1, slides: [1, 2, 3, 4] }">
                     <!-- Slides -->
                     <template x-for="slide in slides" :key="slide">
