@@ -17,19 +17,15 @@
 
 <body x-cloak x-data="{darkMode: $persist(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)}" :class="{'dark': darkMode === true }" class="antialiased">
     @auth
-        <script type="text/javascript">
-            window.location = "{{ url('/dashboard') }}";
-        </script>
+        @include('layouts/user/navbar')
+        <div class="flex flex-row-reverse">
+            <main class="flex-1 p-4">
+                @yield('content')
+            </main>
+            @include('layouts/user/sidebar')
+        </div>
     @endauth
 
-    @include('layouts/user/navbar')
-    <div class="flex flex-row-reverse">
-        <main class="flex-1 p-4">
-            @yield('content')
-        </main>
-        @include('layouts/user/sidebar')
-    </div>
-    
 </body>
 
 </html>
