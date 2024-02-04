@@ -1,10 +1,10 @@
-# Ka-Chew Fried Chicken
+# GrinWell Clinic
 
-![Image](https://github.com/repiyann/Laravel_PTI/assets/92260886/b63ea063-04f7-40a8-b27f-8366a34e5993)
+![image](https://github.com/repiyann/PBD-Klinik-Laravel/assets/92260886/23d1ce30-f70b-4100-824c-270ae78679d3)
 
 ## Description
 
-Effortless restaurant management and customer ordering with a simple Laravel site. Secure and explore Dark Mode for a comfortable browsing experience.
+Effortless clinic appointment with doctor, build with a simple Laravel site. Secure and explore Dark Mode for a comfortable browsing experience.
 
 ### Build With
 
