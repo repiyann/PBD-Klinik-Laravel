@@ -19,11 +19,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// 2 kode di bawah untuk check role dan hanya bisa membuka halaman dashboard sesuai role masing-masing
 Route::controller(AuthController::class)->group(function () {
     Route::get('login', 'loginPage')->name('loginPage');
     Route::get('register', 'registerPage')->name('registerPage');
-    Route::post('loginUser', 'login')->name('loginUser');
+    Route::post('loginUser', 'loginUser')->name('loginUser');
     Route::post('createUser', 'create')->name('createUser');
     Route::get('logout', 'logout')->name('logout');
 });
@@ -35,5 +34,9 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(ProfileController::class)->group(function () {
         Route::get('profile', 'viewProfile')->name('viewProfile');
+        Route::get('record', 'viewRecord')->name('viewRecord');
+        Route::post('profile/updateProfile', 'updateProfile')->name('updateProfile');
+        Route::post('profile/updatePassword', 'updatePassword')->name('updatePassword');
+        Route::delete('profile/deleteProfile', 'deleteAccount')->name('deleteAccount');
     });
 });

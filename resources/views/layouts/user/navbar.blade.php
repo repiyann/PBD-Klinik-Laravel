@@ -85,31 +85,27 @@
 
         <!-- Hamburger Content -->
         <div x-cloak x-show="showMenu" @click.outside="showMenu = false" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95">
-            <div class="absolute md:hidden bg-white dark:bg-gray-950 shadow-lg dark:shadow-gray-900 w-full justify-center text-center">
-                <ul class="px-5">
-                    <li class="pt-2">
-                        <a href="#" class="text-lg font-semibold dark:text-white"> Home </a>
-                    </li>
-                    <li class="">
-                        <a href="#menu" class="text-lg font-semibold dark:text-white"> Services </a>
-                    </li>
-                    <li class="">
-                        <a href="#about" class="text-lg font-semibold dark:text-white"> About Us </a>
-                    </li>
-                    <li class="pb-2 border-b-2">
-                        <a href="{{ route('logout') }}" class="text-lg font-semibold dark:text-white"> Logout </a>
-                    </li>
-                    <!-- <li class="py-2">
-                        <button @click="darkMode = !darkMode" class="px-3 md:hidden">
-                            <svg class="w-5 h-5 absolute block transition duration-150" aria-hidden="true" fill="#9333ea" :class="darkMode && 'opacity-0'" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
-                            </svg>
-                            <svg class="w-5 h-5 opacity-0 transition duration-150" aria-hidden="true" fill="#9333ea" :class="darkMode && 'opacity-100'" viewBox="0 0 20 20">
-                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-                            </svg>
-                        </button>
-                    </li> -->
-                </ul>
+            <div x-data="{ expanded: false }">
+                <div class="absolute md:hidden bg-white dark:bg-gray-950 shadow-lg dark:shadow-gray-900 w-full justify-center text-center">
+                    <ul class="px-5">
+                        <li class="pt-2">
+                            <a href="#" class="text-lg font-semibold dark:text-white"> Home </a>
+                        </li>
+                        <li>
+                            <a href="#menu" class="text-lg font-semibold dark:text-white"> Notifications </a>
+                        </li>
+                        <li class="pb-2 border-b-2">
+                            <button @click="expanded = ! expanded" class="text-lg font-semibold dark:text-white"> Profile
+                                <i class="fa-solid fa-chevron-up" :class="expanded && 'rotate-180'"></i>
+                            </button>
+                            <p class="dark:text-white" x-show="expanded" x-collapse> Account </p>
+                            <p class="dark:text-white" x-show="expanded" x-collapse> Record </p>
+                        </li>
+                        <li class="py-2">
+                            <a href="{{ route('logout') }}" class="text-lg font-semibold dark:text-white"> Logout </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

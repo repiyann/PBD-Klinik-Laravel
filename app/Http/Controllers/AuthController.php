@@ -28,7 +28,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|min:8|confirmed',
         ]);
 
         $data = $request->all();
@@ -42,7 +42,7 @@ class AuthController extends Controller
         return redirect("login")->withSuccess('Great! You have Successfully registered');
     }
 
-    public function login(Request $request): RedirectResponse
+    public function loginUser(Request $request): RedirectResponse
     {
         $request->validate([
             'email' => 'required',
@@ -55,7 +55,7 @@ class AuthController extends Controller
                 ->withSuccess('You have Successfully logged in');
         }
 
-        return redirect("dashboard")->withSuccess('Oops! You have entered invalid credentials');
+        return redirect("/")->withSuccess('Oops! You have entered invalid credentials');
     }
 
     public function logout(): RedirectResponse
