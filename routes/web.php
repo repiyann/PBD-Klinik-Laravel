@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppointmentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
@@ -29,9 +30,10 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::controller(AppointmentController::class)->group(function () {
+        Route::get('dashboard', 'showRecord')->name('dashboard');
+        Route::get('/dashboard/records/{id}', 'getRecordData')->name('dashboard.records.data');
+    });
 
     Route::controller(ProfileController::class)->group(function () {
         Route::get('profile', 'viewProfile')->name('viewProfile');

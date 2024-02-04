@@ -20,7 +20,6 @@ class RecordController extends Controller
         return view('user.record', compact('records'));
     }
 
-
     public function create(): View
     {
         return view('user.addRecord');
