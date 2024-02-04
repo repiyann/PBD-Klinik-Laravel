@@ -16,11 +16,6 @@ class ProfileController extends Controller
         return view('user.profile');
     }
 
-    public function viewRecord(): View
-    {
-        return view('user.record');
-    }
-
     public function updateProfile(Request $request): RedirectResponse
     {
         $user = Auth::user();
@@ -30,7 +25,6 @@ class ProfileController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
         ]);
 
-        $user = User::find($user->id);
         $user->name = $request->input('name');
         $user->email = $request->input('email');
         $user->save();
@@ -47,8 +41,6 @@ class ProfileController extends Controller
             'newPassword' => 'required|min:8|confirmed',
         ]);
 
-        $user = User::find($user->id);
-
         #Match The Old Password
         if (!Hash::check($request->input('oldPassword'), $user->password)) {
             return back()->with("error", "Old Password Doesn't match!");
@@ -64,8 +56,6 @@ class ProfileController extends Controller
     public function deleteAccount(Request $request)
     {
         $user = Auth::user();
-
-        $user = User::find($user->id);
         $user->delete();
 
         return redirect()->route('/')->with('success', 'Account deleted successfully.');

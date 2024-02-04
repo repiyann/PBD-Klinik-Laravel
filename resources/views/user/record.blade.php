@@ -1,62 +1,59 @@
 @extends('user.app')
 
 @section('content')
+<div class="dark:bg-gray-800 md:min-h-[82.2vh]">
+    <h2 class="my-3 text-2xl text-center md:text-start font-semibold text-gray-700 dark:text-gray-200">
+        Records
+    </h2>
 
-<div class="flex items-center justify-center lg:py-5 py-5 px-5">
-    <div class="mx-auto w-full max-w-[550px]">
-        <div class="tabs h-[80.1vh]">
-            <form action="" method="POST">
-                <div class="-mx-3 flex flex-wrap">
-                    <h3 class="w-full text-center text-2xl font-semibold mb-4 dark:text-white"> Patient's Detail </h3>
-                    <div class="w-full px-3 sm:w-1/2">
-                        <div class="mb-5">
-                            <label for="fName" class="block text-base font-medium text-[#07074D] dark:text-white">
-                                First Name
-                            </label>
-                            <input type="text" name="fName" id="fName" placeholder="First Name" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
-                        </div>
-                    </div>
-                    <div class="w-full px-3 sm:w-1/2">
-                        <div class="mb-5">
-                            <label for="lName" class="block text-base font-medium text-[#07074D] dark:text-white">
-                                Last Name
-                            </label>
-                            <input type="text" name="lName" id="lName" placeholder="Last Name" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
-                        </div>
-                    </div>
-                </div>
-                <div class="-mx-3 flex flex-wrap">
-                    <div class="w-full px-3 sm:w-1/2">
-                        <div class="mb-5">
-                            <label for="guest" class="block text-base font-medium text-[#07074D] dark:text-white">
-                                National Identity Number
-                            </label>
-                            <input type="text" name="guest" id="guest" placeholder="National Identity Number" class="w-full appearance-none rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
-                        </div>
-                    </div>
-                    <div class="w-full px-3 sm:w-1/2">
-                        <div class="mb-5">
-                            <label for="date" class="block text-base font-medium text-[#07074D] dark:text-white">
-                                Date of Birth
-                            </label>
-                            <input type="date" name="date" id="date" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-5">
-                    <label for="guest" class="block text-base font-medium text-[#07074D] dark:text-white">
-                        Address
-                    </label>
-                    <textarea type="text" name="guest" id="guest" placeholder="Address" min="0" class="w-full appearance-none rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"></textarea>
-                </div>
-                <div>
-                    <button class="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none">
-                        Submit
-                    </button>
-                </div>
-            </form>
+    <div class="text-center mb-4 md:hidden">
+        <a href="{{ route('addRecord') }}" class="inline-block px-4 py-2 text-base font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+            Add New Record
+        </a>
+    </div>
+
+    <div class="mb-3 mt-1 hidden md:block">
+        <a href="{{ route('addRecord') }}" class="inline-block px-4 py-2 text-base font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
+            Add New Record
+        </a>
+    </div>
+
+    <div class="w-full overflow-hidden rounded-lg shadow-xs">
+        <div class="w-full overflow-x-auto">
+            <table class="w-full table-auto">
+                <thead class="hidden md:table-header-group">
+                    <tr class="text-sm font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
+                        <th class="px-4 py-3">First Name</th>
+                        <th class="px-4 py-3">Last Name</th>
+                        <th class="px-4 py-3">National ID</th>
+                        <th class="px-4 py-3">Birthdate</th>
+                        <th class="px-4 py-3">Address</th>
+                        <th class="px-4 py-3"></th>
+                        <th class="px-4 py-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                    @foreach ($records as $record)
+                    <tr class="text-gray-700 dark:text-gray-400">
+                        <td class="px-4 py-3">{{ $record->firstName }}</td>
+                        <td class="px-4 py-3">{{ $record->lastName }}</td>
+                        <td class="px-4 py-3">{{ $record->nationalID }}</td>
+                        <td class="px-4 py-3">{{ $record->birthDate }}</td>
+                        <td class="px-4 py-3">{{ $record->address }}</td>
+                        <td class="px-4 py-3">{{ $record->notes }}</td>
+                        <td class="px-4 py-3">
+                            <a href="{{ route('editRecord', $record->id) }}" class="text-blue-500 hover:underline">Edit</a>
+                            <form action="{{ route('deleteRecord', $record->id) }}" method="POST" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-500 hover:underline">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
-
 @endsection

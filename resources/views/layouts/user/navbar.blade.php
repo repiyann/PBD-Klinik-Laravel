@@ -52,12 +52,6 @@
                                     <li>
                                         <p class="block px-4 pb-2 text-gray-800 font-bold text-center shadow-sm uppercase"> Notifications </p>
                                     </li>
-                                    <li>
-                                        <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 font-semibold">Profile</a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('logout') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 font-semibold">Logout</a>
-                                    </li>
                                 </ul>
                             </div>
 
@@ -98,8 +92,14 @@
                             <button @click="expanded = ! expanded" class="text-lg font-semibold dark:text-white"> Profile
                                 <i class="fa-solid fa-chevron-up" :class="expanded && 'rotate-180'"></i>
                             </button>
-                            <p class="dark:text-white" x-show="expanded" x-collapse> Account </p>
-                            <p class="dark:text-white" x-show="expanded" x-collapse> Record </p>
+                            <ul>
+                                <li>
+                                    <a href="{{ route('viewProfile') }}" class="dark:text-white" x-show="expanded" x-collapse> Account </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('viewRecord') }}" class="dark:text-white" x-show="expanded" x-collapse> Record </a>
+                                </li>
+                            </ul>
                         </li>
                         <li class="py-2">
                             <a href="{{ route('logout') }}" class="text-lg font-semibold dark:text-white"> Logout </a>

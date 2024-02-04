@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RecordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,9 +35,17 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(ProfileController::class)->group(function () {
         Route::get('profile', 'viewProfile')->name('viewProfile');
-        Route::get('record', 'viewRecord')->name('viewRecord');
         Route::post('profile/updateProfile', 'updateProfile')->name('updateProfile');
         Route::post('profile/updatePassword', 'updatePassword')->name('updatePassword');
         Route::delete('profile/deleteProfile', 'deleteAccount')->name('deleteAccount');
+    });
+
+    Route::controller(RecordController::class)->group(function () {
+        Route::get('record', 'index')->name('viewRecord');
+        Route::get('record/addRecord', 'create')->name('addRecord');
+        Route::post('record/store', 'storeRecord')->name('storeRecord');
+        Route::get('record/{recordId}/edit', 'editRecord')->name('editRecord');
+        Route::put('record/{recordId}/update', 'updateRecord')->name('updateRecord');
+        Route::delete('record/{recordId}/delete', 'deleteRecord')->name('deleteRecord');
     });
 });
