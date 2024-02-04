@@ -107,28 +107,22 @@
                         Clinic Service
                     </label>
                     <select name="clinicService" id="clinicService" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">
-                        <option value="general_checkup">General Checkup</option>
-                        <option value="dental_checkup">Dental Checkup</option>
-                        <!-- Add more options as needed -->
+                        <option selected disabled> Choose Service </option>
+                        @foreach($services as $service)
+                        <option value="{{ $service->id }}">{{ $service->name }}</option>
+                        @endforeach
                     </select>
                 </div>
 
-                <div class="mb-5" id="doctorOptions">
-                    <label class="block text-base font-medium text-[#07074D]">
-                        Choose a Doctor
+                <div class="mb-5">
+                    <label for="doctorSelect" class="block text-base font-medium text-[#07074D]">
+                        Doctors
                     </label>
-                    <div class="flex">
-                        <label class="flex items-center mr-4">
-                            <input type="radio" name="doctor" value="dr_smith" data-specialty="general" class="form-radio doctor-option" />
-                            <span class="ml-2">Dr. Smith (General)</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="radio" name="doctor" value="dr_jones" data-specialty="dental" class="form-radio doctor-option" />
-                            <span class="ml-2">Dr. Jones (Dental)</span>
-                        </label>
-                        <!-- Add more doctors as needed -->
-                    </div>
+                    <select name="doctorSelect" id="doctorSelect" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">
+                        <option selected disabled> Choose Service </option>
+                    </select>
                 </div>
+
                 <div>
                     <button class="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none">
                         Submit
@@ -164,6 +158,22 @@
                     }
                 });
             });
+            $('#clinicService').change(function() {
+                const selectedService = $(this).val();
+                $.ajax({
+                    url: '/dashboard/doctors/' + selectedService,
+                    success: function(data) {
+                        var doctorsSelect = $('#doctorSelect');
+                        doctorsSelect.empty();
+                        doctorsSelect.append('<option selected disabled> Choose Service </option>');
+
+                        $.each(data, function(key, doctor) {
+                            doctorsSelect.append('<option value="' + doctor.id + '">' + doctor.name + '</option>');
+                        });
+                    }
+                });
+            });
+
         });
     </script>
 </body>

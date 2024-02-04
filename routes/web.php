@@ -32,7 +32,8 @@ Route::controller(AuthController::class)->group(function () {
 Route::middleware('auth')->group(function () {
     Route::controller(AppointmentController::class)->group(function () {
         Route::get('dashboard', 'showRecord')->name('dashboard');
-        Route::get('/dashboard/records/{id}', 'getRecordData')->name('dashboard.records.data');
+        Route::get('dashboard/records/{id}', 'getRecordData');
+        Route::get('dashboard/doctors/{services}', 'getDoctors');
     });
 
     Route::controller(ProfileController::class)->group(function () {

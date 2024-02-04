@@ -2,27 +2,45 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Record;
+use App\Models\Service;
+use App\Models\Doctor;
 use Illuminate\Http\RedirectResponse;
 
 class AppointmentController extends Controller
 {
-    public function showRecord()
+    public function showRecord(Request $request)
     {
         $user = Auth::user();
         $records = Record::where('user_id', $user->id)->get();
-
         $userHasRecord = $records->isNotEmpty();
+        $services = Service::all();
 
-        return view('dashboard', ['userHasRecord' => $userHasRecord, 'records' => $records]);
+        $selectedServiceId = $request->input('clinicService');
+        $doctors = Doctor::whereHas('services', function ($query) use ($selectedServiceId) {
+            $query->where('services.id', $selectedServiceId);
+        })->get();
+
+        return view('dashboard', ['userHasRecord' => $userHasRecord, 'records' => $records, 'services' => $services, 'doctors' => $doctors]);
     }
 
     public function getRecordData($id)
     {
         $record = Record::find($id);
+
         return response()->json($record);
+    }
+
+    public function getDoctors($serviceId)
+    {
+        $doctors = Doctor::whereHas('services', function ($query) use ($serviceId) {
+            $query->where('services.id', $serviceId);
+        })->get();
+
+        return response()->json($doctors);
     }
 
     public function submitForm(Request $request): RedirectResponse
@@ -57,9 +75,8 @@ class AppointmentController extends Controller
             $record->save();
         }
 
-        $reservation = new Reservation;
+        $reservation = new Appointment();
         $reservation->record_id = $record->id;
-        // Set other reservation details here
         $reservation->save();
 
         return redirect()->route('dashboard');
