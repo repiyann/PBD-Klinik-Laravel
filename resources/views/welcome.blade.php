@@ -10,6 +10,7 @@
 
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 </head>
 
 <body x-cloak x-data="{darkMode: $persist(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)}" :class="{'dark': darkMode === true }" class="antialiased">
@@ -17,7 +18,7 @@
         <div class="pt-3 md:px-5 md:py-5 lg:px-28" x-data="{ showMenu: false }">
             <div :class="showMenu ? 'px-5' : 'px-5'">
                 <div class="flex justify-between pb-3 md:p-0" :class="showMenu && 'border-b-2'">
-                    <a href="#" class="flex items-center">
+                    <a href="#" class="flex items-center" onclick="event.preventDefault(); scrollToTop();">
                         <i class="fa-solid fa-shield-heart fa-2xl" style="color: #9333ea;"></i>
                         <p class="hidden md:block ml-2 text-2xl font-bold dark:text-white"> GrinWell Clinic </p>
                     </a>
@@ -216,10 +217,20 @@
                 this.activeSlide = (this.activeSlide - 1 + this.slides.length) % this.slides.length;
             },
         });
-
-        // Alpine.data('imageCarousel', imageCarousel); <- possibly in use
+        $('a[href="#menu"], a[href="#about"]').click(function(event) {
+            event.preventDefault();
+            var target = $(this.hash);
+            $('html, body').animate({
+                scrollTop: target.offset().top
+            }, 1000);
+        });
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
     </script>
-
 </body>
 
 </html>
