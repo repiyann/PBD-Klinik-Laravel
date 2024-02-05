@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
@@ -22,47 +21,55 @@ class AuthController extends Controller
     {
         return view('auth.register');
     }
-    
+
     public function create(Request $request): RedirectResponse
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8|confirmed',
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required',
+                'email' => 'required|email|unique:users',
+                'password' => 'required|min:8|confirmed',
+            ]);
 
-        $data = $request->all();
+            $data =  $request->only('name', 'email', 'password');
+            User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password'])
+            ]);
 
-        User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password'])
-        ]);
-
-        return redirect("login")->withSuccess('Great! You have Successfully registered');
+            return redirect("login")->withSuccess('Great! you have successfully registered');
+        } catch (\Illuminate\Database\QueryException $e) {
+            return back()->withErrors(['error' => 'Sorry, we are experiencing technical difficulties. Please try again later.']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors())->withInput();
+        }
     }
 
     public function loginUser(Request $request): RedirectResponse
     {
         $request->validate([
             'email' => 'required',
-            'password' => 'required',
+            'password' => 'required|min:8',
         ]);
 
         $credentials = $request->only('email', 'password');
-        if (Auth::attempt($credentials)) {
-            return redirect()->intended('dashboard')
-                ->withSuccess('You have Successfully logged in');
+        try {
+            if (Auth::attempt($credentials)) {
+                return redirect()->intended('dashboard')
+                    ->withSuccess('You have successfully logged in');
+            } else {
+                return back()->withErrors(['error' => 'You have entered invalid credentials!']);
+            }
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Sorry, we are experiencing technical difficulties. Please try again later.']);
         }
-
-        return redirect("/")->withSuccess('Oops! You have entered invalid credentials');
     }
 
     public function logout(): RedirectResponse
     {
-        Session::flush();
         Auth::logout();
 
-        return Redirect('/');
+        return redirect('/');
     }
 }
