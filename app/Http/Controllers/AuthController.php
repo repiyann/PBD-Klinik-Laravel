@@ -66,7 +66,7 @@ class AuthController extends Controller
         }
     }
 
-    public function logout(): RedirectResponse
+    public function logout()
     {
         Auth::logout();
 

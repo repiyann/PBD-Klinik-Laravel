@@ -17,17 +17,20 @@ use App\Http\Controllers\RecordController;
 |
 */
 
+Route::get('/', function () {
+    return view('welcome');
+});
+
 Route::middleware('guest')->group(function () {
-    Route::get('/', function () {
-        return view('welcome');
-    });
+    // Route::get('/', function () {
+    //     return view('welcome');
+    // });
 
     Route::controller(AuthController::class)->group(function () {
         Route::get('login', 'loginPage')->name('login');
         Route::get('register', 'registerPage')->name('registerPage');
         Route::post('loginUser', 'loginUser')->name('loginUser');
         Route::post('createUser', 'create')->name('createUser');
-        Route::get('logout', 'logout')->name('logout');
     });
 });
 
@@ -35,6 +38,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         return redirect()->route('dashboard');
     });
+
+    Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::controller(AppointmentController::class)->group(function () {
         // Route::get('dashboard', 'showRecord')->name('dashboard');

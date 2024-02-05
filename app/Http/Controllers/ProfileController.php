@@ -7,7 +7,7 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
+use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
 {
@@ -18,46 +18,65 @@ class ProfileController extends Controller
 
     public function updateProfile(Request $request): RedirectResponse
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-        ]);
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            ]);
 
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->save();
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator, 'errorUpdateProfile')->withInput();
+            }
 
-        return redirect()->route('viewProfile')->with('success', 'Account settings updated successfully.');
+            $user->name = $request->input('name');
+            $user->email = $request->input('email');
+            $user->save();
+
+            return redirect()->back()->with('success', 'Account settings updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred while updating account settings.');
+        }
     }
 
     public function updatePassword(Request $request): RedirectResponse
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        $request->validate([
-            'oldPassword' => 'required',
-            'newPassword' => 'required|min:8|confirmed',
-        ]);
+            $validator = Validator::make($request->all(), [
+                'oldPassword' => 'required',
+                'newPassword' => 'required|min:8|confirmed',
+            ]);
 
-        #Match The Old Password
-        if (!Hash::check($request->input('oldPassword'), $user->password)) {
-            return back()->with("error", "Old Password Doesn't match!");
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator, 'errorUpdatePassword')->withInput();
+            }
+
+            #Match The Old Password
+            if (!Hash::check($request->input('oldPassword'), $user->password)) {
+                return back()->with("error", "Old Password Doesn't match!");
+            }
+
+            $user->password = Hash::make($request->newPassword);
+            $user->save();
+
+            return back()->with("status", "Password changed successfully!");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred while updating the password.');
         }
-
-        $user->password = Hash::make($request->newPassword);
-        $user->save();
-
-        return back()->with("status", "Password changed successfully!");
     }
 
-
-    public function deleteAccount(Request $request)
+    public function deleteAccount(): RedirectResponse
     {
-        $user = Auth::user();
-        $user->delete();
+        try {
+            $user = Auth::user();
+            $user->delete();
 
-        return redirect()->route('/')->with('success', 'Account deleted successfully.');
+            return redirect()->route('/')->with('success', 'Account deleted successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred while deleting the account.');
+        }
     }
 }

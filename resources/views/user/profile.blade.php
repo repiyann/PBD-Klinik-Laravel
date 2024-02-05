@@ -7,7 +7,19 @@
         <div class="tabs">
             <h3 class="w-full text-center text-2xl font-semibold mb-4 dark:text-white">Account Settings</h3>
 
+            @if ($errors->has('name') || $errors->has('email'))
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert">
+                <p>{{ $errors->first() }}</p>
+            </div>
+            @endif
+
             <section id="account-info" class="tab-content card dark:bg-gray-700">
+                @if ($errors->errorUpdateProfile->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert">
+                    <p>{{ $errors->errorUpdateProfile->first() }}</p>
+                </div>
+                @endif
+
                 <form action="{{ route('updateProfile') }}" method="POST">
                     @csrf
                     @method('POST')
@@ -41,6 +53,12 @@
             </section>
 
             <section id="update-password" class="tab-content card dark:bg-gray-700">
+                @if ($errors->errorUpdatePassword->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert">
+                    <p>{{ $errors->errorUpdatePassword->first() }}</p>
+                </div>
+                @endif
+
                 <form action="{{ route('updatePassword') }}" method="POST">
                     @csrf
                     @method('POST')
@@ -74,6 +92,12 @@
             </section>
 
             <section id="delete-account" class="tab-content card dark:bg-gray-700">
+                @if ($errors->any())
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert">
+                    <p>{{ $errors->first() }}</p>
+                </div>
+                @endif
+
                 <form action="{{ route('deleteAccount') }}" method="POST">
                     @csrf
                     @method('DELETE')
