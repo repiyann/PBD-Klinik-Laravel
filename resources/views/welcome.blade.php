@@ -71,33 +71,22 @@
                 <div class="absolute md:hidden bg-white dark:bg-gray-950 shadow-lg dark:shadow-gray-900 w-full justify-center text-center">
                     <ul class="px-5">
                         <li class="pt-2">
-                            <a href="#" class="text-lg font-semibold dark:text-white"> Home </a>
+                            <a href="#" class="text-lg font-semibold dark:text-white" onclick="event.preventDefault(); scrollToTop();"> Home </a>
                         </li>
                         <li class="">
                             <a href="#menu" class="text-lg font-semibold dark:text-white"> Services </a>
                         </li>
-                        <li class="">
+                        <li class="pb-2 border-b-2">
                             <a href="#about" class="text-lg font-semibold dark:text-white"> About Us </a>
                         </li>
-                        <li class="pt-2 pb-5 border-b-2">
+                        <li class="py-4">
                             @if (Route::has('registerPage'))
                             <a href="{{ route('registerPage') }}" class="bg-[#9333ea] px-4 py-1 rounded-lg text-lg font-semibold text-white"> Book Now </a>
                             @endif
                         </li>
-                        <li class="py-2">
-                            <button @click="darkMode = !darkMode" class="px-3 md:hidden">
-                                <svg class="w-5 h-5 absolute block transition duration-150" aria-hidden="true" fill="#9333ea" :class="darkMode && 'opacity-0'" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
-                                </svg>
-                                <svg class="w-5 h-5 opacity-0 transition duration-150" aria-hidden="true" fill="#9333ea" :class="darkMode && 'opacity-100'" viewBox="0 0 20 20">
-                                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-                                </svg>
-                            </button>
-                        </li>
                     </ul>
                 </div>
             </div>
-
         </div>
     </nav>
 
@@ -224,6 +213,7 @@
                 scrollTop: target.offset().top
             }, 1000);
         });
+
         function scrollToTop() {
             window.scrollTo({
                 top: 0,
