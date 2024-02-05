@@ -17,17 +17,10 @@ use App\Http\Controllers\RecordController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::middleware('guest')->group(function () {
-    // Route::get('/', function () {
-    //     return view('welcome');
-    // });
-
     Route::controller(AuthController::class)->group(function () {
-        Route::get('login', 'loginPage')->name('login');
+        Route::get('home', 'index')->name('home');
+        Route::get('login', 'loginPage')->name('loginPage');
         Route::get('register', 'registerPage')->name('registerPage');
         Route::post('loginUser', 'loginUser')->name('loginUser');
         Route::post('createUser', 'create')->name('createUser');

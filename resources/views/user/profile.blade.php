@@ -14,18 +14,19 @@
             @endif
 
             <section id="account-info" class="tab-content card dark:bg-gray-700">
-                @if ($errors->errorUpdateProfile->any())
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert">
-                    <p>{{ $errors->errorUpdateProfile->first() }}</p>
-                </div>
-                @endif
-
                 <form action="{{ route('updateProfile') }}" method="POST">
                     @csrf
                     @method('POST')
                     <div class="-mx-3 flex flex-wrap">
                         <p class="w-full px-3 text-lg font-semibold dark:text-white">Profile Information</p>
                         <p class="w-full px-3 mb-6 dark:text-white">Update your account's profile information and email address.</p>
+
+                        @if ($errors->errorUpdateProfile->any())
+                        <div class="bg-red-100 mb-5 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert">
+                            <p>{{ $errors->errorUpdateProfile->first() }}</p>
+                        </div>
+                        @endif
+
                         <div class="w-full px-3 sm:w-1/2">
                             <div class="mb-5">
                                 <label for="name" class="block text-base font-medium text-[#07074D] dark:text-white">
@@ -53,17 +54,18 @@
             </section>
 
             <section id="update-password" class="tab-content card dark:bg-gray-700">
-                @if ($errors->errorUpdatePassword->any())
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert">
-                    <p>{{ $errors->errorUpdatePassword->first() }}</p>
-                </div>
-                @endif
-
                 <form action="{{ route('updatePassword') }}" method="POST">
                     @csrf
                     @method('POST')
                     <p class="w-full text-lg font-semibold dark:text-white">Update Password</p>
                     <p class="w-full mb-6 dark:text-white">Ensure your account is using a long, random password to stay secure.</p>
+
+                    @if (session('errorUpdatePassword'))
+                    <div class="bg-red-100 mb-5 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert">
+                        <p>{{ session('errorUpdatePassword') }}</p>
+                    </div>
+                    @endif
+
                     <div class="mb-5">
                         <label for="password" class="block text-base font-medium text-[#07074D] dark:text-white">
                             Current Password
@@ -92,12 +94,6 @@
             </section>
 
             <section id="delete-account" class="tab-content card dark:bg-gray-700">
-                @if ($errors->any())
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert">
-                    <p>{{ $errors->first() }}</p>
-                </div>
-                @endif
-
                 <form action="{{ route('deleteAccount') }}" method="POST">
                     @csrf
                     @method('DELETE')
@@ -106,6 +102,12 @@
                         <p class="w-full mb-6 dark:text-white">Once your account is deleted, all of its resources and data will be permanently deleted.</p>
                         <p class="text-base font-medium text-[#6B7280] dark:text-white">Are you sure you want to delete your account?</p>
                     </div>
+
+                    @if ($errors->any())
+                    <div class="bg-red-100 mb-5 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert">
+                        <p>{{ $errors->first() }}</p>
+                    </div>
+                    @endif
 
                     <div>
                         <button class="hover:shadow-form rounded-md bg-red-500 py-3 px-8 text-center text-base font-semibold text-white outline-none">

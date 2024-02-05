@@ -12,6 +12,11 @@ use Illuminate\Http\RedirectResponse;
 
 class AuthController extends Controller
 {
+    public function index(): View
+    {
+        return view(('welcome'));
+    }
+
     public function loginPage(): View
     {
         return view('auth.login');

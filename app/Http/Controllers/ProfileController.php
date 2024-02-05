@@ -44,28 +44,32 @@ class ProfileController extends Controller
     {
         try {
             $user = Auth::user();
-
+        
             $validator = Validator::make($request->all(), [
                 'oldPassword' => 'required',
                 'newPassword' => 'required|min:8|confirmed',
             ]);
-
+        
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator, 'errorUpdatePassword')->withInput();
             }
-
-            #Match The Old Password
+        
             if (!Hash::check($request->input('oldPassword'), $user->password)) {
-                return back()->with("error", "Old Password Doesn't match!");
+                return back()->with("errorUpdatePassword", "Current password is wrong!");
+            }
+
+            if ($request->input('oldPassword') == $request->input('newPassword')) {
+                return back()->with("errorUpdatePassword", "New password cannot be the same as the old password!");
             }
 
             $user->password = Hash::make($request->newPassword);
             $user->save();
-
-            return back()->with("status", "Password changed successfully!");
+        
+            return back()->with("success", "Password changed successfully!");
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred while updating the password.');
         }
+        
     }
 
     public function deleteAccount(): RedirectResponse
