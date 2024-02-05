@@ -24,7 +24,9 @@
     @include('layouts/user/navbar')
     <div class="flex items-center justify-center lg:py-12 py-5 px-5 dark:bg-gray-800">
         <div class="mx-auto w-full max-w-[550px]">
-            <form action="" method="POST">
+            <form action="{{ route('check1') }}" method="POST">
+                @csrf
+                @method('POST')
                 <div class="tabs">
                     <div class="-mx-3 flex flex-wrap">
                         <h2 class="w-full text-center text-2xl font-semibold mb-4 dark:text-white"> Reservation Form </h2>
@@ -129,10 +131,10 @@
                             </select>
                         </div>
                         <div class="mb-5">
-                            <label for="dateofBirth" class="block text-base font-medium text-[#07074D] dark:text-white">
+                            <label for="dateAvailable" class="block text-base font-medium text-[#07074D] dark:text-white">
                                 Date Available
                             </label>
-                            <input type="text" name="dateOfBirth" id="workDaysInput" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
+                            <input type="text" name="dateAvailable" id="workDaysInput" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
                         </div>
                         <div class="mb-5">
                             <label for="doctorSelect" class="block text-base font-medium text-[#07074D] dark:text-white">
@@ -227,11 +229,13 @@
                         month: 'long',
                         day: 'numeric'
                     };
-                    var dateString = selectedDate.toLocaleDateString('en-US', options);
+
+                    var dateString = selectedDate.toLocaleDateString('en-GB', options);
                     var encodedDateString = encodeURIComponent(dateString);
                     var dayOfWeek = selectedDate.toLocaleDateString('en-US', {
                         weekday: 'long'
                     });
+                    $('#workDaysInput').val(dateString);
 
                     let doctorSelect = $('#doctorSelect');
                     $.ajax({
@@ -252,7 +256,6 @@
                     });
                 });
             });
-
         });
     </script>
 </body>

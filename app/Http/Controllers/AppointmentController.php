@@ -47,4 +47,42 @@ class AppointmentController extends Controller
 
         return response()->json($availableDoctors);
     }
+
+    public function makeAppointment(Request $request): RedirectResponse
+    {
+        try {
+            $user = Auth::user();
+
+            $request->validate([
+                'firstName' => 'required',
+                'lastName' => 'required',
+                'nationalID' => 'required|unique:records,nationalID|min:16',
+                'birthDate' => 'required|date|date_format:Y-m-d',
+                'address' => 'required',
+                'notes' => 'nullable',
+            ]);
+
+            $user->records()->create([
+                'firstName' => $request->input('firstName'),
+                'lastName' => $request->input('lastName'),
+                'nationalID' => $request->input('nationalID'),
+                'birthDate' => $request->input('birthDate'),
+                'address' => $request->input('address'),
+                'notes' => $request->input('notes'),
+            ]);
+
+            return redirect()->route('user.appointment')->with('success', 'Appointment successfully made!');
+        } catch (\Illuminate\Database\QueryException $e) {
+            return back()->withErrors(['error' => 'Sorry, we are experiencing technical difficulties. Please try again later.']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors())->withInput();
+        }
+    }
+
+    public function checkQ(Request $request)
+    {
+        $data = $request->all();
+
+        dd($data);
+    }
 }
