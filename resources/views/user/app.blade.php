@@ -14,7 +14,6 @@
 </head>
 
 <body x-cloak x-data="{darkMode: $persist(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)}" :class="{'dark': darkMode === true }" class="antialiased">
-    @auth
     @include('layouts/user/navbar')
     <div class="flex flex-row-reverse">
         <main class="flex-1 p-4 dark:bg-gray-800">
@@ -22,7 +21,6 @@
         </main>
         @include('layouts/user/sidebar')
     </div>
-    @endauth
 </body>
 
 </html>

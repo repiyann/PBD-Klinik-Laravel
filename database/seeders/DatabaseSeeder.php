@@ -15,10 +15,8 @@ class DatabaseSeeder extends Seeder
     // DatabaseSeeder.php
     public function run()
     {
-        Service::factory(5)->create();
-
-        Doctor::factory(5)->create()->each(function ($doctor) {
-            $doctor->services()->attach(Service::pluck('id')->random());
-        });
+        $this->call([
+            DoctorSeeder::class,
+        ]);
     }
 }

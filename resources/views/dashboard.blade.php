@@ -4,18 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title> GrinWell Clinic </title>
 
     @vite('resources/css/app.css')
 
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/anchor@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 </head>
 
 <body x-cloak x-data="{darkMode: $persist(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)}" :class="{'dark': darkMode === true }" class="antialiased">
-    @auth
     @include('layouts/user/navbar')
     <div class="flex items-center justify-center lg:py-12 py-5 px-5 dark:bg-gray-800">
         <div class="mx-auto w-full max-w-[550px]">
@@ -45,8 +50,8 @@
                                 Select Record:
                             </label>
                             <select name="existingRecord" id="existingRecord" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">
-                                @foreach ($records as $record)
                                 <option selected disabled> Choose Record </option>
+                                @foreach ($records as $record)
                                 <option value="{{ $record->id }}">{{ $record->firstName }} {{ $record->lastName }}</option>
                                 @endforeach
                             </select>
@@ -54,6 +59,7 @@
                     </div>
                     @endif
                 </div>
+
                 <div class="-mx-3 flex flex-wrap">
                     <div class="w-full px-3 sm:w-1/2">
                         <div class="mb-5">
@@ -72,6 +78,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="-mx-3 flex flex-wrap">
                     <div class="w-full px-3 sm:w-1/2">
                         <div class="mb-5">
@@ -90,6 +97,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="mb-5">
                     <label for="guest" class="block text-base font-medium text-[#07074D] dark:text-white">
                         Address
@@ -102,27 +110,32 @@
                     </label>
                     <textarea type="text" name="notes" id="notes" placeholder="Address" class="w-full appearance-none rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"></textarea>
                 </div>
+
                 <div class="mb-5">
                     <label for="clinicService" class="block text-base font-medium text-[#07074D] dark:text-white">
                         Clinic Service
                     </label>
                     <select name="clinicService" id="clinicService" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">
                         <option selected disabled> Choose Service </option>
-                        @foreach($services as $service)
-                        <option value="{{ $service->id }}">{{ $service->name }}</option>
+                        @foreach ($services as $service)
+                        <option value="{{ $service }}">{{ $service }}</option>
                         @endforeach
                     </select>
                 </div>
-
+                <div class="mb-5">
+                    <label for="dateofBirth" class="block text-base font-medium text-[#07074D] dark:text-white">
+                        Date Available
+                    </label>
+                    <input type="text" name="dateOfBirth" id="workDaysInput" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
+                </div>
                 <div class="mb-5">
                     <label for="doctorSelect" class="block text-base font-medium text-[#07074D] dark:text-white">
                         Doctors
                     </label>
                     <select name="doctorSelect" id="doctorSelect" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">
-                        <option selected disabled> Choose Service </option>
+                        <option selected disabled> Choose Doctor </option>
                     </select>
                 </div>
-
                 <div>
                     <button class="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none">
                         Submit
@@ -131,10 +144,15 @@
             </form>
         </div>
     </div>
-    @endauth
 
     <script>
         $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            // toggle for enabling selection
             $('input[name="recordOption"]').change(function() {
                 if (this.value === 'existing') {
                     $('#existingRecordSection').show();
@@ -144,6 +162,7 @@
                     $('#fName').removeAttr('disabled');
                 }
             });
+            // fill input with existing record
             $('#existingRecord').change(function() {
                 const selectedRecord = $(this).val();
                 $.ajax({
@@ -158,19 +177,61 @@
                     }
                 });
             });
-            $('#clinicService').change(function() {
-                const selectedService = $(this).val();
-                $.ajax({
-                    url: '/dashboard/doctors/' + selectedService,
-                    success: function(data) {
-                        var doctorsSelect = $('#doctorSelect');
-                        doctorsSelect.empty();
-                        doctorsSelect.append('<option selected disabled> Choose Service </option>');
+            // initialize datepicker
+            $(function() {
+                var daysOfWeekDisabled = [0, 6];
+                var today = new Date();
+                var oneMonthFromToday = new Date();
+                oneMonthFromToday.setMonth(today.getMonth() + 1);
 
-                        $.each(data, function(key, doctor) {
-                            doctorsSelect.append('<option value="' + doctor.id + '">' + doctor.name + '</option>');
-                        });
+                var datePicker = $("#workDaysInput").datepicker({
+                    minDate: today,
+                    maxDate: oneMonthFromToday,
+                    beforeShowDay: function(date) {
+                        var day = date.getDay();
+                        return [(daysOfWeekDisabled.indexOf(day) == -1)];
                     }
+                });
+
+                datePicker.prop('disabled', true);
+
+                $('#clinicService').change(function() {
+                    datePicker.prop('disabled', false);
+                });
+
+                $('#workDaysInput').change(function() {
+                    let service = $('#clinicService').val();
+                    let selectedDate = new Date($(this).val());
+
+                    var options = {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    };
+                    var dateString = selectedDate.toLocaleDateString('en-US', options);
+                    var encodedDateString = encodeURIComponent(dateString);
+                    var dayOfWeek = selectedDate.toLocaleDateString('en-US', {
+                        weekday: 'long'
+                    });
+
+                    let doctorSelect = $('#doctorSelect');
+                    $.ajax({
+                        url: '/dashboard/' + service + '/' + dayOfWeek,
+                        success: function(data) {
+                            doctorSelect.empty();
+                            $.each(data, function(index, doctor) {
+                                var optionText = doctor.name + ', ' + doctor.start_work + ' - ' + doctor.end_work;
+
+                                var option = $('<option>', {
+                                    value: doctor.id,
+                                    text: optionText
+                                });
+
+                                doctorSelect.append(option);
+                            });
+                        }
+                    });
                 });
             });
 

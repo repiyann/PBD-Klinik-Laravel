@@ -13,12 +13,6 @@
 </head>
 
 <body x-cloak x-data="{darkMode: $persist(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)}" :class="{'dark': darkMode === true }" class="antialiased">
-    @auth
-    <script type="text/javascript">
-        window.location = "{{ url('/dashboard') }}";
-    </script>
-    @endauth
-
     <nav class="bg-white dark:bg-gray-950 shadow-lg dark:shadow-gray-900 sticky top-0 z-[1000]">
         <div class="pt-3 md:px-5 md:py-5 lg:px-28" x-data="{ showMenu: false }">
             <div :class="showMenu ? 'px-5' : 'px-5'">

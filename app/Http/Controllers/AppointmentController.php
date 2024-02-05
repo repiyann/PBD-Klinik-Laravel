@@ -2,83 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Appointment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Record;
-use App\Models\Service;
 use App\Models\Doctor;
 use Illuminate\Http\RedirectResponse;
 
 class AppointmentController extends Controller
 {
-    public function showRecord(Request $request)
+    public function showRecordAndDoctor(Request $request)
     {
         $user = Auth::user();
         $records = Record::where('user_id', $user->id)->get();
-        $userHasRecord = $records->isNotEmpty();
-        $services = Service::all();
+        $services = Doctor::distinct('service')->pluck('service');
 
-        $selectedServiceId = $request->input('clinicService');
-        $doctors = Doctor::whereHas('services', function ($query) use ($selectedServiceId) {
-            $query->where('services.id', $selectedServiceId);
-        })->get();
-
-        return view('dashboard', ['userHasRecord' => $userHasRecord, 'records' => $records, 'services' => $services, 'doctors' => $doctors]);
+        return view('dashboard', [
+            'userHasRecord' => $records->isNotEmpty(),
+            'records' => $records,
+            'services' => $services
+        ]);
     }
 
     public function getRecordData($id)
     {
-        $record = Record::find($id);
-
-        return response()->json($record);
+        return response()->json(Record::find($id));
     }
 
-    public function getDoctors($serviceId)
+    public function getAvailableDates($service)
     {
-        $doctors = Doctor::whereHas('services', function ($query) use ($serviceId) {
-            $query->where('services.id', $serviceId);
-        })->get();
+        $availableDates = Doctor::where('service', $service)
+            ->pluck('work_days')
+            ->flatten()
+            ->unique()
+            ->values();
 
-        return response()->json($doctors);
+        return response()->json($availableDates);
     }
 
-    public function submitForm(Request $request): RedirectResponse
+    public function getAvailableDoctors($service, $selectedDate)
     {
-        $recordOption = $request->input('recordOption');
-        $firstName = $request->input('firstName');
-        $lastName = $request->input('lastName');
-        $nationalID = $request->input('nationalID');
-        $birthDate = $request->input('birthDate');
-        $address = $request->input('address');
-        $notes = $request->input('notes');
+        $availableDoctors = Doctor::where('service', $service)
+            ->whereJsonContains('work_days', $selectedDate)
+            ->get();
 
-        if ($recordOption) {
-            if ($recordOption === 'new') {
-                $record = new Record;
-                $record->firstName = $firstName;
-                $record->lastName = $lastName;
-                $record->nationalID = $nationalID;
-                $record->birthDate = $birthDate;
-                $record->address = $address;
-                $record->notes = $notes;
-                $record->save();
-            }
-        } else {
-            $record = new Record;
-            $record->firstName = $firstName;
-            $record->lastName = $lastName;
-            $record->nationalID = $nationalID;
-            $record->birthDate = $birthDate;
-            $record->address = $address;
-            $record->notes = $notes;
-            $record->save();
-        }
-
-        $reservation = new Appointment();
-        $reservation->record_id = $record->id;
-        $reservation->save();
-
-        return redirect()->route('dashboard');
+        return response()->json($availableDoctors);
     }
 }

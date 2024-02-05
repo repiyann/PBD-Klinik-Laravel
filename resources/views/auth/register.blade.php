@@ -52,7 +52,7 @@
                 </form>
                 
                 <hr class="my-6 border-gray-300 w-full">
-                <p class="mt-2"> Have an account? <a href="{{ route('loginPage')}}" class="text-blue-500 hover:text-blue-700 font-semibold">Log in</a></p>
+                <p class="mt-2"> Have an account? <a href="{{ route('login')}}" class="text-blue-500 hover:text-blue-700 font-semibold">Log in</a></p>
             </div>
         </div>
     </section>

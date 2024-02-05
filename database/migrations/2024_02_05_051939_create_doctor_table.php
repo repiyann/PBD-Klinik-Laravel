@@ -11,22 +11,23 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('doctor_service', function (Blueprint $table) {
+        Schema::create('doctors', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('doctor_id');
-            $table->unsignedBigInteger('service_id');
+            $table->string('name');
+            $table->string('service');
+            $table->json('work_days');
+            $table->time('start_work');
+            $table->time('end_work');
             $table->timestamps();
-
-            $table->foreign('doctor_id')->references('id')->on('doctors');
-            $table->foreign('service_id')->references('id')->on('services');
         });
     }
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('doctor_service');
+        Schema::dropIfExists('doctors');
     }
 };

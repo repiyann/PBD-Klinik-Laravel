@@ -17,23 +17,32 @@ use App\Http\Controllers\RecordController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::middleware('guest')->group(function () {
+    Route::get('/', function () {
+        return view('welcome');
+    });
 
-Route::controller(AuthController::class)->group(function () {
-    Route::get('login', 'loginPage')->name('loginPage');
-    Route::get('register', 'registerPage')->name('registerPage');
-    Route::post('loginUser', 'loginUser')->name('loginUser');
-    Route::post('createUser', 'create')->name('createUser');
-    Route::get('logout', 'logout')->name('logout');
+    Route::controller(AuthController::class)->group(function () {
+        Route::get('login', 'loginPage')->name('login');
+        Route::get('register', 'registerPage')->name('registerPage');
+        Route::post('loginUser', 'loginUser')->name('loginUser');
+        Route::post('createUser', 'create')->name('createUser');
+        Route::get('logout', 'logout')->name('logout');
+    });
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/', function () {
+        return redirect()->route('dashboard');
+    });
+
     Route::controller(AppointmentController::class)->group(function () {
-        Route::get('dashboard', 'showRecord')->name('dashboard');
+        // Route::get('dashboard', 'showRecord')->name('dashboard');
+        // Route::get('dashboard/doctors/{services}', 'getDoctors');
         Route::get('dashboard/records/{id}', 'getRecordData');
-        Route::get('dashboard/doctors/{services}', 'getDoctors');
+        Route::get('dashboard', 'showRecordAndDoctor')->name('dashboard');
+        Route::get('dashboard/{service}', 'getAvailableDates');
+        Route::get('dashboard/{service}/{date}', 'getAvailableDoctors');
     });
 
     Route::controller(ProfileController::class)->group(function () {

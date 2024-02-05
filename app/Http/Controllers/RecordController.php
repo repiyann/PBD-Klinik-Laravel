@@ -6,9 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Record;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Log;
 
 class RecordController extends Controller
 {
