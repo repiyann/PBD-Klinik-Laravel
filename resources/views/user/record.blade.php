@@ -20,6 +20,12 @@
 
     <div class="w-full overflow-hidden rounded-lg shadow-xs">
         <div class="w-full overflow-x-auto">
+            @if ($errors->any())
+            <div class="bg-red-100 mb-5 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert">
+                <p>{{ $errors->first() }}</p>
+            </div>
+            @endif
+
             <table class="w-full table-auto">
                 <thead class="hidden md:table-header-group">
                     <tr class="text-sm font-semibold tracking-wide text-left text-gray-500 uppercase border-b dark:border-gray-700 bg-gray-50 dark:text-gray-400 dark:bg-gray-800">
@@ -28,11 +34,12 @@
                         <th class="px-4 py-3">National ID</th>
                         <th class="px-4 py-3">Birthdate</th>
                         <th class="px-4 py-3">Address</th>
-                        <th class="px-4 py-3"></th>
+                        <th class="px-4 py-3">Notes</th>
                         <th class="px-4 py-3">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
+                    @if(!$records->isEmpty())
                     @foreach ($records as $record)
                     <tr class="text-gray-700 dark:text-gray-400">
                         <td class="px-4 py-3">{{ $record->firstName }}</td>
@@ -51,6 +58,11 @@
                         </td>
                     </tr>
                     @endforeach
+                    @else
+                    <tr>
+                        <td colspan="7" class="px-4 py-3 text-2xl font-semibold text-center">No records found.</td>
+                    </tr>
+                    @endif
                 </tbody>
             </table>
         </div>

@@ -12,10 +12,14 @@ class RecordController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-        $records = Record::where('user_id', $user->id)->get();
+        try {
+            $user = Auth::user();
+            $records = Record::where('user_id', $user->id)->get();
 
-        return view('user.record', compact('records'));
+            return view('user.record', compact('records'));
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Unable to fetch records: ' . $e->getMessage()]);
+        }
     }
 
     public function create(): View
@@ -25,66 +29,86 @@ class RecordController extends Controller
 
     public function storeRecord(Request $request): RedirectResponse
     {
-        $user = Auth::user();
+        try {
+            $user = Auth::user();
 
-        $request->validate([
-            'firstName' => 'required',
-            'lastName' => 'required',
-            'nationalID' => 'required|unique:records,nationalID|min:16',
-            'birthDate' => 'required|date|date_format:Y-m-d',
-            'address' => 'required',
-            'notes' => 'nullable',
-        ]);
+            $request->validate([
+                'firstName' => 'required',
+                'lastName' => 'required',
+                'nationalID' => 'required|unique:records,nationalID|min:16',
+                'birthDate' => 'required|date|date_format:Y-m-d',
+                'address' => 'required',
+                'notes' => 'nullable',
+            ]);
 
-        $user->records()->create([
-            'firstName' => $request->input('firstName'),
-            'lastName' => $request->input('lastName'),
-            'nationalID' => $request->input('nationalID'),
-            'birthDate' => $request->input('birthDate'),
-            'address' => $request->input('address'),
-            'notes' => $request->input('notes'),
-        ]);
+            $user->records()->create([
+                'firstName' => $request->input('firstName'),
+                'lastName' => $request->input('lastName'),
+                'nationalID' => $request->input('nationalID'),
+                'birthDate' => $request->input('birthDate'),
+                'address' => $request->input('address'),
+                'notes' => $request->input('notes'),
+            ]);
 
-        return redirect()->route('viewRecord')->with('success', 'Record added successfully!');
+            return redirect()->route('viewRecord')->with('success', 'Record added successfully!');
+        } catch (\Illuminate\Database\QueryException $e) {
+            return back()->withErrors(['error' => 'Sorry, we are experiencing technical difficulties. Please try again later.']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors())->withInput();
+        }
     }
 
     public function editRecord(string $id): View
     {
-        $records = Record::findOrFail($id);
+        try {
+            $records = Record::findOrFail($id);
 
-        return view('user.editRecord', ['record' => $records]);
+            return view('user.editRecord', ['record' => $records]);
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Unable to edit record: ' . $e->getMessage()]);
+        }
     }
 
     public function updateRecord(Request $request, string $id): RedirectResponse
     {
-        $request->validate([
-            'firstName' => 'required',
-            'lastName' => 'required',
-            'nationalID' => 'required|min:16',
-            'birthDate' => 'required|date|date_format:Y-m-d',
-            'address' => 'required',
-            'notes' => 'nullable',
-        ]);
+        try {
+            $request->validate([
+                'firstName' => 'required',
+                'lastName' => 'required',
+                'nationalID' => 'required|min:16',
+                'birthDate' => 'required|date|date_format:Y-m-d',
+                'address' => 'required',
+                'notes' => 'nullable',
+            ]);
 
-        $record = Record::findOrFail($id);
+            $record = Record::findOrFail($id);
 
-        $record->update([
-            'firstName' => $request->input('firstName'),
-            'lastName' => $request->input('lastName'),
-            'nationalID' => $request->input('nationalID'),
-            'birthDate' => $request->input('birthDate'),
-            'address' => $request->input('address'),
-            'notes' => $request->input('notes'),
-        ]);
+            $record->update([
+                'firstName' => $request->input('firstName'),
+                'lastName' => $request->input('lastName'),
+                'nationalID' => $request->input('nationalID'),
+                'birthDate' => $request->input('birthDate'),
+                'address' => $request->input('address'),
+                'notes' => $request->input('notes'),
+            ]);
 
-        return redirect()->route('viewRecord')->with('success', 'Record updated successfully!');
+            return redirect()->route('viewRecord')->with('success', 'Record updated successfully!');
+        } catch (\Illuminate\Database\QueryException $e) {
+            return back()->withErrors(['error' => 'Sorry, we are experiencing technical difficulties. Please try again later.']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->errors())->withInput();
+        }
     }
 
     public function deleteRecord($recordId): RedirectResponse
     {
-        $record = Record::findOrFail($recordId);
-        $record->delete();
+        try {
+            $record = Record::findOrFail($recordId);
+            $record->delete();
 
-        return redirect()->route('viewRecord')->with('success', 'Record deleted successfully!');
+            return redirect()->route('viewRecord')->with('success', 'Record deleted successfully!');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Unable to delete record: ' . $e->getMessage()]);
+        }
     }
 }

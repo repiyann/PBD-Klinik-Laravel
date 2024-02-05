@@ -7,11 +7,16 @@
         <div class="tabs h-[80.1vh]">
             <form action="{{ route('updateRecord', ['recordId' => $record->id]) }}" method="POST">
                 @csrf
-                @method('PUT') <!-- Use PUT for update -->
-
+                @method('PUT')
                 <div class="-mx-3 flex flex-wrap">
                     <h3 class="w-full text-center text-2xl font-semibold mb-4 dark:text-white"> Patient's Detail </h3>
-
+                    
+                    @if ($errors->any())
+                    <div class="bg-red-100 mb-5 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert">
+                        <p>{{ $errors->first() }}</p>
+                    </div>
+                    @endif
+                    
                     <div class="w-full px-3 sm:w-1/2">
                         <div class="mb-5">
                             <label for="fName" class="block text-base font-medium text-[#07074D] dark:text-white">
