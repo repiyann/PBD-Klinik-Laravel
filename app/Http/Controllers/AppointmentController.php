@@ -48,6 +48,11 @@ class AppointmentController extends Controller
         return response()->json($availableDoctors);
     }
 
+    public function getDoctor($id)
+    {
+        return response()->json(Doctor::find($id));
+    }
+
     public function makeAppointment(Request $request): RedirectResponse
     {
         try {
@@ -82,7 +87,9 @@ class AppointmentController extends Controller
     public function checkQ(Request $request)
     {
         $data = $request->all();
-
-        dd($data);
+        $doctorSelect = $data['doctorSelect'];
+        $doctor = Doctor::find($doctorSelect);
+        // dd($doctor);
+        return response()->json(['data' => $doctor]);
     }
 }

@@ -36,12 +36,12 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(AppointmentController::class)->group(function () {
         // Route::get('dashboard', 'showRecord')->name('dashboard');
-        // Route::get('dashboard/doctors/{services}', 'getDoctors');
+        Route::get('dashboard/doctors/{id}', 'getDoctor');
         Route::get('dashboard/records/{id}', 'getRecordData');
         Route::get('dashboard', 'showRecordAndDoctor')->name('dashboard');
         Route::get('dashboard/{service}', 'getAvailableDates');
         Route::get('dashboard/{service}/{date}', 'getAvailableDoctors');
-        // Route::post('check', 'checkQ')->name('check1');
+        Route::post('check', 'checkQ')->name('check1');
     });
 
     Route::post('check', [AppointmentController::class, 'checkQ'])->name('check1');

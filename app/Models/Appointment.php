@@ -9,15 +9,27 @@ class Appointment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['schedule_id'];
+    protected $fillable = [
+        'record_id',
+        'first_name',
+        'last_name',
+        'clinic_service',
+        'date_available',
+        'doctor_id'
+    ];
 
-    public function service()
+    public function user()
     {
-        return $this->belongsTo(Service::class);
+        return $this->belongsTo(User::class);
     }
 
     public function doctor()
     {
-        return $this->belongsTo(Doctor::class);
+        return $this->belongsTo(Doctor::class, 'doctor_id');
+    }
+
+    public function record()
+    {
+        return $this->belongsTo(Record::class, 'record_id');
     }
 }

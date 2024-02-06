@@ -136,7 +136,8 @@
                             <label for="dateAvailable" class="block text-base font-medium text-[#07074D] dark:text-white">
                                 Date Available
                             </label>
-                            <input type="text" name="dateAvailable" id="workDaysInput" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
+                            <input type="text" name="dateAvailableTest" id="workDaysInput" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
+                            <input type="hidden" id="hiddenDateInput" name="dateAvailable">
                         </div>
                         <div class="mb-5">
                             <label for="doctorSelect" class="block text-base font-medium text-[#07074D] dark:text-white">
@@ -145,6 +146,13 @@
                             <select name="doctorSelect" id="doctorSelect" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md">
                                 <option selected disabled> Choose Doctor </option>
                             </select>
+                        </div>
+                        <div class="mb-5">
+                            <label for="slot" class="block text-base font-medium text-[#07074D] dark:text-white">
+                                Time Slots
+                            </label>
+                            <div id="timeSlots" class="flex space-x-4 mt-2 btn-group">
+                            </div>
                         </div>
                         <div>
                             <button class="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none">

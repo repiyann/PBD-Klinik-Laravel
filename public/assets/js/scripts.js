@@ -1,12 +1,12 @@
 // Dashboard JS
-$(document).ready(function() {
+$(document).ready(function () {
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
     // toggle for enabling selection
-    $('input[name="recordOption"]').change(function() {
+    $('input[name="recordOption"]').change(function () {
         if (this.value === 'existing') {
             $('#existingRecordSection').show();
             $('#fName').attr('disabled', 'disabled');
@@ -16,11 +16,11 @@ $(document).ready(function() {
         }
     });
     // fill input with existing record
-    $('#existingRecord').change(function() {
+    $('#existingRecord').change(function () {
         const selectedRecord = $(this).val();
         $.ajax({
             url: '/dashboard/records/' + selectedRecord,
-            success: function(data) {
+            success: function (data) {
                 $('#fName').val(data.firstName);
                 $('#lName').val(data.lastName);
                 $('#nik').val(data.nationalID);
@@ -31,7 +31,7 @@ $(document).ready(function() {
         });
     });
     // initialize datepicker
-    $(function() {
+    $(function () {
         var daysOfWeekDisabled = [0, 6];
         var today = new Date();
         var oneMonthFromToday = new Date();
@@ -40,7 +40,7 @@ $(document).ready(function() {
         var datePicker = $("#workDaysInput").datepicker({
             minDate: today,
             maxDate: oneMonthFromToday,
-            beforeShowDay: function(date) {
+            beforeShowDay: function (date) {
                 var day = date.getDay();
                 return [(daysOfWeekDisabled.indexOf(day) == -1)];
             }
@@ -48,13 +48,67 @@ $(document).ready(function() {
 
         datePicker.prop('disabled', true);
 
-        $('#clinicService').change(function() {
+        $('#clinicService').change(function () {
             datePicker.prop('disabled', false);
         });
 
-        $('#workDaysInput').change(function() {
+        function populateDoctorOptions(doctor) {
+            var startWork = new Date('1970-01-01T' + doctor.start_work + 'Z');
+            var endWork = new Date('1970-01-01T' + doctor.end_work + 'Z');
+            var formattedStartWork = ('0' + startWork.getUTCHours()).slice(-2) + ':' + ('0' + startWork.getUTCMinutes()).slice(-2);
+            var formattedEndWork = ('0' + endWork.getUTCHours()).slice(-2) + ':' + ('0' + endWork.getUTCMinutes()).slice(-2);
+            var optionText = formattedStartWork + ' - ' + formattedEndWork + ' | ' + doctor.name;
+
+            var option = $('<option>', {
+                value: doctor.id,
+                text: optionText
+            });
+
+            option.data('doctor', doctor);
+
+            $('#doctorSelect').append(option);
+        }
+
+        function handleDoctorSelectChange() {
+            const selectedOption = $('#doctorSelect option:selected');
+            const doctorID = selectedOption.val();
+            console.log(doctorID);
+
+            if (selectedOption.data('doctor')) {
+                const doctor = selectedOption.data('doctor');
+                const doctorIDs = doctor.id;
+                const doctorName = doctor.name;
+                console.log(doctorIDs, doctorName);
+
+                const ajaxURL = '/dashboard/doctors/' + doctorIDs;
+                console.log('AJAX URL:', ajaxURL);
+
+                $.ajax({
+                    method: 'GET',
+                    url: ajaxURL,
+                    success: function (additionalData) {
+                        console.log(additionalData);
+                        if ('data' in additionalData) {
+                            const additionalData1 = additionalData.data;
+                            console.log(additionalData1);
+                            if ('id' in additionalData1 && 'name' in additionalData1) {
+                                console.log('Doctor Data:', additionalData1);
+                            } else {
+                                console.error('Properties not found in additionalData');
+                            }
+                        } else {
+                            console.error('Data key not found in the response');
+                        }
+                    }
+                });
+            }
+        }
+
+        $('#workDaysInput').change(function () {
             let service = $('#clinicService').val();
             let selectedDate = new Date($(this).val());
+            let adjustedDate = new Date(selectedDate.getTime() - (selectedDate.getTimezoneOffset() * 60000));
+            $('#hiddenDateInput').val(adjustedDate.toISOString().split('T')[0]);
 
             var options = {
                 weekday: 'long',
@@ -64,37 +118,24 @@ $(document).ready(function() {
             };
 
             var dateString = selectedDate.toLocaleDateString('en-GB', options);
-            var encodedDateString = encodeURIComponent(dateString);
-            var dayOfWeek = selectedDate.toLocaleDateString('en-US', {
-                weekday: 'long'
-            });
+            var dayOfWeek = selectedDate.toLocaleDateString('en-GB', { weekday: 'long' });
             $('#workDaysInput').val(dateString);
 
             let doctorSelect = $('#doctorSelect');
             $.ajax({
                 url: '/dashboard/' + service + '/' + dayOfWeek,
-                success: function(data) {
+                success: function (data) {
                     doctorSelect.empty();
-                    $.each(data, function(index, doctor) {
-                        var startWork = new Date('1970-01-01T' + doctor.start_work + 'Z');
-                        var endWork = new Date('1970-01-01T' + doctor.end_work + 'Z');
-                    
-                        // Format the times to show only the hour and minute
-                        var formattedStartWork = ('0' + startWork.getUTCHours()).slice(-2) + ':' + ('0' + startWork.getUTCMinutes()).slice(-2);
-                        var formattedEndWork = ('0' + endWork.getUTCHours()).slice(-2) + ':' + ('0' + endWork.getUTCMinutes()).slice(-2);
-                    
-                        var optionText = formattedStartWork + ' - ' + formattedEndWork + ' | ' + doctor.name;
-                        
-                        var option = $('<option>', {
-                            value: doctor.id,
-                            text: optionText
-                        });
+                    doctorSelect.append('<option selected disabled> Choose Doctor </option>');
 
-                        doctorSelect.append(option);
+                    $.each(data, function (index, doctor) {
+                        populateDoctorOptions(doctor)
                     });
                 }
             });
         });
+
+        $('#doctorSelect').change(handleDoctorSelectChange);
     });
 });
 
@@ -105,21 +146,21 @@ const imageCarousel = () => ({
 
     loadImages() {
         this.slides = [{
-                image: 'https://picsum.photos/id/1025/800/400',
-                description: 'Combo'
-            },
-            {
-                image: 'https://picsum.photos/id/1015/800/401',
-                description: 'Ala Carte'
-            },
-            {
-                image: 'https://picsum.photos/id/1025/800/402',
-                description: 'Drink'
-            },
-            {
-                image: 'https://picsum.photos/id/1019/800/403',
-                description: 'Snack'
-            },
+            image: 'https://picsum.photos/id/1025/800/400',
+            description: 'Combo'
+        },
+        {
+            image: 'https://picsum.photos/id/1015/800/401',
+            description: 'Ala Carte'
+        },
+        {
+            image: 'https://picsum.photos/id/1025/800/402',
+            description: 'Drink'
+        },
+        {
+            image: 'https://picsum.photos/id/1019/800/403',
+            description: 'Snack'
+        },
         ];
     },
 
@@ -131,7 +172,7 @@ const imageCarousel = () => ({
         this.activeSlide = (this.activeSlide - 1 + this.slides.length) % this.slides.length;
     },
 });
-$('a[href="#menu"], a[href="#about"]').click(function(event) {
+$('a[href="#menu"], a[href="#about"]').click(function (event) {
     event.preventDefault();
     var target = $(this.hash);
     $('html, body').animate({
