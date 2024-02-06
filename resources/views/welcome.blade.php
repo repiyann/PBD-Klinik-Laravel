@@ -7,10 +7,12 @@
     <title> GrinWell Clinic </title>
 
     @vite('resources/css/app.css')
+    <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}">
 
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="{{ asset('assets/js/scripts.js') }}"></script>
 </head>
 
 <body x-cloak x-data="{darkMode: $persist(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)}" :class="{'dark': darkMode === true }" class="antialiased">
@@ -171,56 +173,6 @@
             </div>
         </div>
     </section>
-
-    <!-- Carousel Script -->
-    <script>
-        const imageCarousel = () => ({
-            activeSlide: 0,
-            slides: [],
-
-            loadImages() {
-                this.slides = [{
-                        image: 'https://picsum.photos/id/1025/800/400',
-                        description: 'Combo'
-                    },
-                    {
-                        image: 'https://picsum.photos/id/1015/800/401',
-                        description: 'Ala Carte'
-                    },
-                    {
-                        image: 'https://picsum.photos/id/1025/800/402',
-                        description: 'Drink'
-                    },
-                    {
-                        image: 'https://picsum.photos/id/1019/800/403',
-                        description: 'Snack'
-                    },
-                ];
-            },
-
-            nextSlide() {
-                this.activeSlide = (this.activeSlide + 1) % this.slides.length;
-            },
-
-            prevSlide() {
-                this.activeSlide = (this.activeSlide - 1 + this.slides.length) % this.slides.length;
-            },
-        });
-        $('a[href="#menu"], a[href="#about"]').click(function(event) {
-            event.preventDefault();
-            var target = $(this.hash);
-            $('html, body').animate({
-                scrollTop: target.offset().top
-            }, 1000);
-        });
-
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-    </script>
 </body>
 
 </html>

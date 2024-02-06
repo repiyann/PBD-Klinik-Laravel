@@ -9,6 +9,7 @@
     <title> GrinWell Clinic </title>
 
     @vite('resources/css/app.css')
+    <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}">
 
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/anchor@3.x.x/dist/cdn.min.js"></script>
@@ -18,6 +19,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="{{ asset('assets/js/scripts.js') }}"></script>
 </head>
 
 <body x-cloak x-data="{darkMode: $persist(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)}" :class="{'dark': darkMode === true }" class="antialiased">
@@ -154,110 +156,6 @@
             </form>
         </div>
     </div>
-
-    <style>
-        .card {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-    </style>
-
-    <script>
-        $(document).ready(function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            // toggle for enabling selection
-            $('input[name="recordOption"]').change(function() {
-                if (this.value === 'existing') {
-                    $('#existingRecordSection').show();
-                    $('#fName').attr('disabled', 'disabled');
-                } else {
-                    $('#existingRecordSection').hide();
-                    $('#fName').removeAttr('disabled');
-                }
-            });
-            // fill input with existing record
-            $('#existingRecord').change(function() {
-                const selectedRecord = $(this).val();
-                $.ajax({
-                    url: '/dashboard/records/' + selectedRecord,
-                    success: function(data) {
-                        $('#fName').val(data.firstName);
-                        $('#lName').val(data.lastName);
-                        $('#nik').val(data.nationalID);
-                        $('#birthdate').val(data.birthDate);
-                        $('#address').val(data.address);
-                        $('#notes').val(data.notes);
-                    }
-                });
-            });
-            // initialize datepicker
-            $(function() {
-                var daysOfWeekDisabled = [0, 6];
-                var today = new Date();
-                var oneMonthFromToday = new Date();
-                oneMonthFromToday.setMonth(today.getMonth() + 1);
-
-                var datePicker = $("#workDaysInput").datepicker({
-                    minDate: today,
-                    maxDate: oneMonthFromToday,
-                    beforeShowDay: function(date) {
-                        var day = date.getDay();
-                        return [(daysOfWeekDisabled.indexOf(day) == -1)];
-                    }
-                });
-
-                datePicker.prop('disabled', true);
-
-                $('#clinicService').change(function() {
-                    datePicker.prop('disabled', false);
-                });
-
-                $('#workDaysInput').change(function() {
-                    let service = $('#clinicService').val();
-                    let selectedDate = new Date($(this).val());
-
-                    var options = {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    };
-
-                    var dateString = selectedDate.toLocaleDateString('en-GB', options);
-                    var encodedDateString = encodeURIComponent(dateString);
-                    var dayOfWeek = selectedDate.toLocaleDateString('en-US', {
-                        weekday: 'long'
-                    });
-                    $('#workDaysInput').val(dateString);
-
-                    let doctorSelect = $('#doctorSelect');
-                    $.ajax({
-                        url: '/dashboard/' + service + '/' + dayOfWeek,
-                        success: function(data) {
-                            doctorSelect.empty();
-                            $.each(data, function(index, doctor) {
-                                var optionText = doctor.name + ', ' + doctor.start_work + ' - ' + doctor.end_work;
-
-                                var option = $('<option>', {
-                                    value: doctor.id,
-                                    text: optionText
-                                });
-
-                                doctorSelect.append(option);
-                            });
-                        }
-                    });
-                });
-            });
-        });
-    </script>
 </body>
 
 </html>
