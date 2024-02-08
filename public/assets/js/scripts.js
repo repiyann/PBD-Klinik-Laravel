@@ -107,7 +107,7 @@ $(document).ready(function () {
             success: function (response) {
                 console.log('Response:', response);
 
-                $('#timeSlotsLabel').empty().append($('<label>', {
+                const timeSlotsLabel = $('#timeSlotsLabel').empty().append($('<label>', {
                     for: 'timeSlot',
                     text: 'Time Slots',
                     class: 'block text-base font-medium text-[#07074D] dark:text-white',
@@ -124,7 +124,7 @@ $(document).ready(function () {
 
                 response.availableTimeSlots.forEach(function (formattedTime) {
                     if (currentDate === dateAvailable && formattedTime <= currentFormattedTime && !noSlotMessageAdded) {
-                        timeSlotsDiv.append('<div class="bg-red-100 mb-5 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert"><p>No Slot for Appointment!</p></div>');
+                        timeSlotsLabel.append('<div class="w-full bg-red-100 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert"><p>No Slot for Appointment!</p></div>');
                         noSlotMessageAdded = true;
                     } else if (formattedTime > currentFormattedTime || currentDate !== dateAvailable) {
                         const formattedTimeHi = formattedTime.slice(0, 5);
