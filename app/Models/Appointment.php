@@ -11,11 +11,12 @@ class Appointment extends Model
 
     protected $fillable = [
         'record_id',
-        'first_name',
-        'last_name',
-        'clinic_service',
-        'date_available',
-        'doctor_id'
+        'firstName',
+        'lastName',
+        'clinicService',
+        'dateAvailable',
+        'doctor_id',
+        'timeSlot'
     ];
 
     public function user()

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Record;
 use App\Models\Doctor;
+use App\Models\Appointment;
 use Illuminate\Http\RedirectResponse;
 
 class AppointmentController extends Controller
@@ -54,24 +55,52 @@ class AppointmentController extends Controller
             $user = Auth::user();
 
             $request->validate([
-                'firstName' => 'required',
-                'lastName' => 'required',
-                'nationalID' => 'required|unique:records,nationalID|min:16',
-                'birthDate' => 'required|date|date_format:Y-m-d',
+                'recordOption' => 'required|string|in:new,existing',
+                'fName' => 'required|string',
+                'lastName' => 'required|string',
+                'nik' => ($request->recordOption == 'new') ? 'required|string|min:16|unique:records,nationalID' : 'nullable',
+                'dateOfBirth' => 'required|date|date_format:Y-m-d',
                 'address' => 'required',
                 'notes' => 'nullable',
+                'clinicService' => 'required|string',
+                'dateAvailable' => 'required|date',
+                'doctorSelect' => 'required|numeric',
+                'timeSlot' => 'required|date_format:H:i',
             ]);
 
-            $user->records()->create([
-                'firstName' => $request->input('firstName'),
-                'lastName' => $request->input('lastName'),
-                'nationalID' => $request->input('nationalID'),
-                'birthDate' => $request->input('birthDate'),
-                'address' => $request->input('address'),
-                'notes' => $request->input('notes'),
+            if ($request->recordOption == 'new') {
+                $user->records()->create([
+                    'firstName' => $request->fName,
+                    'lastName' => $request->lastName,
+                    'nationalID' => $request->nik,
+                    'birthDate' => $request->dateOfBirth,
+                    'address' => $request->address,
+                    'notes' => $request->notes,
+                ]);
+            }
+
+            $existingAppointment = Appointment::where([
+                'clinicService' => $request->clinicService,
+                'dateAvailable' => $request->dateAvailable,
+                'doctor_id' => $request->doctorSelect,
+                'timeSlot' => $request->timeSlot,
+            ])->first();
+
+            if ($existingAppointment) {
+                return redirect()->back()->with('error', 'Appointment already exists for the selected details.');
+            }
+
+            $user->appointment()->create([
+                'record_id' => ($request->recordOption == 'existing') ? $request->existingRecord : null,
+                'firstName' => $request->fName,
+                'lastName' => $request->lastName,
+                'clinicService' => $request->clinicService,
+                'dateAvailable' => $request->dateAvailable,
+                'doctor_id' => $request->doctorSelect,
+                'timeSlot' => $request->timeSlot,
             ]);
 
-            return redirect()->route('user.appointment')->with('success', 'Appointment successfully made!');
+            return redirect()->route('dashboard')->with('success', 'Appointment successfully made!');
         } catch (\Illuminate\Database\QueryException $e) {
             return back()->withErrors(['error' => 'Sorry, we are experiencing technical difficulties. Please try again later.']);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -82,9 +111,7 @@ class AppointmentController extends Controller
     public function checkQ(Request $request)
     {
         $data = $request->all();
-        $doctorSelect = $data['doctorSelect'];
-        $doctor = Doctor::find($doctorSelect);
-        // dd($doctor);
-        return response()->json(['data' => $doctor]);
+
+        dd($data);
     }
 }

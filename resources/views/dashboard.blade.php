@@ -26,13 +26,17 @@
     @include('layouts/user/navbar')
     <div class="flex items-center justify-center lg:py-12 py-5 px-5 dark:bg-gray-800">
         <div class="mx-auto w-full max-w-[550px]">
-            <form action="{{ route('check1') }}" method="POST">
+            <form action="{{ route('tesCok') }}" method="POST">
                 @csrf
                 @method('POST')
                 <div class="tabs">
                     <div class="-mx-3 flex flex-wrap">
                         <h2 class="w-full text-center text-2xl font-semibold mb-4 dark:text-white"> Reservation Form </h2>
-
+                        @if ($errors->any())
+                        <div class="bg-red-100 mb-5 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert">
+                            <p>{{ $errors->first() }}</p>
+                        </div>
+                        @endif
                         @if ($userHasRecord)
                         <div class="px-3">
                             <label class="block text-base font-medium text-[#07074D] dark:text-white">
@@ -73,7 +77,7 @@
                                     <label for="fName" class="block text-base font-medium text-[#07074D] dark:text-white">
                                         First Name
                                     </label>
-                                    <input type="text" name="firstName" id="fName" placeholder="First Name" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
+                                    <input type="text" name="fName" id="firstName" placeholder="First Name" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
                                 </div>
                             </div>
                             <div class="w-full px-3 sm:w-1/2">

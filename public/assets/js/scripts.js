@@ -16,13 +16,17 @@ $(document).ready(function () {
     $('#existingRecord').change(function () {
         const selectedRecord = $(this).val();
         $.get('/dashboard/records/' + selectedRecord, function (data) {
-            $('#fName').val(data.firstName);
+            $('#firstName').val(data.firstName);
             $('#lName').val(data.lastName);
             $('#nik').val(data.nationalID);
             $('#birthdate').val(data.birthDate);
             $('#address').val(data.address);
             $('#notes').val(data.notes);
         });
+    });
+
+    $('form').submit(function() {
+        $('#fName').val(data.firstName);
     });
 
     // clear all selection if select from first

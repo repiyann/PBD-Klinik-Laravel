@@ -39,10 +39,9 @@ Route::middleware('auth')->group(function () {
         Route::get('dashboard', 'showRecordAndDoctor')->name('dashboard');
         Route::get('dashboard/{service}', 'getAvailableDates');
         Route::get('dashboard/{service}/{date}', 'getAvailableDoctors');
-        Route::post('check', 'checkQ')->name('check1');
     });
 
-    Route::post('check', [AppointmentController::class, 'checkQ'])->name('check1');
+    Route::post('check', [AppointmentController::class, 'makeAppointment'])->name('tesCok');
 
     Route::controller(ProfileController::class)->group(function () {
         Route::get('profile', 'viewProfile')->name('viewProfile');
