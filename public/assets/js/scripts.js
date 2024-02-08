@@ -30,6 +30,16 @@ $(document).ready(function () {
             }
         });
     });
+
+    $('#clinicService').change(function () {
+        $('#workDaysInput').val('');
+        $('#doctorSelect').append('<option selected disabled> Choose Doctor </option>');
+        $('#timeSlots').empty();
+    });
+
+    // global data
+    var doctorData;
+
     // initialize datepicker
     $(function () {
         var daysOfWeekDisabled = [0, 6];
@@ -52,58 +62,6 @@ $(document).ready(function () {
             datePicker.prop('disabled', false);
         });
 
-        function populateDoctorOptions(doctor) {
-            var startWork = new Date('1970-01-01T' + doctor.start_work + 'Z');
-            var endWork = new Date('1970-01-01T' + doctor.end_work + 'Z');
-            var formattedStartWork = ('0' + startWork.getUTCHours()).slice(-2) + ':' + ('0' + startWork.getUTCMinutes()).slice(-2);
-            var formattedEndWork = ('0' + endWork.getUTCHours()).slice(-2) + ':' + ('0' + endWork.getUTCMinutes()).slice(-2);
-            var optionText = formattedStartWork + ' - ' + formattedEndWork + ' | ' + doctor.name;
-
-            var option = $('<option>', {
-                value: doctor.id,
-                text: optionText
-            });
-
-            option.data('doctor', doctor);
-
-            $('#doctorSelect').append(option);
-        }
-
-        function handleDoctorSelectChange() {
-            const selectedOption = $('#doctorSelect option:selected');
-            const doctorID = selectedOption.val();
-            console.log(doctorID);
-
-            if (selectedOption.data('doctor')) {
-                const doctor = selectedOption.data('doctor');
-                const doctorIDs = doctor.id;
-                const doctorName = doctor.name;
-                console.log(doctorIDs, doctorName);
-
-                const ajaxURL = '/dashboard/doctors/' + doctorIDs;
-                console.log('AJAX URL:', ajaxURL);
-
-                $.ajax({
-                    method: 'GET',
-                    url: ajaxURL,
-                    success: function (additionalData) {
-                        console.log(additionalData);
-                        if ('data' in additionalData) {
-                            const additionalData1 = additionalData.data;
-                            console.log(additionalData1);
-                            if ('id' in additionalData1 && 'name' in additionalData1) {
-                                console.log('Doctor Data:', additionalData1);
-                            } else {
-                                console.error('Properties not found in additionalData');
-                            }
-                        } else {
-                            console.error('Data key not found in the response');
-                        }
-                    }
-                });
-            }
-        }
-
         $('#workDaysInput').change(function () {
             let service = $('#clinicService').val();
             let selectedDate = new Date($(this).val());
@@ -125,17 +83,68 @@ $(document).ready(function () {
             $.ajax({
                 url: '/dashboard/' + service + '/' + dayOfWeek,
                 success: function (data) {
+                    doctorData = data;
+                    doctorSelect.append('<option selected disabled> Choose Doctor </option>');
                     doctorSelect.empty();
                     doctorSelect.append('<option selected disabled> Choose Doctor </option>');
 
                     $.each(data, function (index, doctor) {
-                        populateDoctorOptions(doctor)
+                        var startWork = new Date('1970-01-01T' + doctor.start_work + 'Z');
+                        var endWork = new Date('1970-01-01T' + doctor.end_work + 'Z');
+                        var formattedStartWork = ('0' + startWork.getUTCHours()).slice(-2) + ':' + ('0' + startWork.getUTCMinutes()).slice(-2);
+                        var formattedEndWork = ('0' + endWork.getUTCHours()).slice(-2) + ':' + ('0' + endWork.getUTCMinutes()).slice(-2);
+                        var optionText = formattedStartWork + ' - ' + formattedEndWork + ' | ' + doctor.name;
+
+                        var option = $('<option>', {
+                            value: doctor.id,
+                            text: optionText
+                        });
+
+                        $('#doctorSelect').append(option);
                     });
                 }
             });
         });
+    });
 
-        $('#doctorSelect').change(handleDoctorSelectChange);
+    $('#doctorSelect').change(function () {
+        const selectedDoctorID = $(this).val();
+        var selectedDoctor = doctorData.find(function (doctor) {
+            return doctor.id == selectedDoctorID;
+        });
+
+        if (selectedDoctor) {
+            var startWork = new Date('1970-01-01T' + selectedDoctor.start_work + 'Z');
+            var endWork = new Date('1970-01-01T' + selectedDoctor.end_work + 'Z');
+
+            var timeSlotsContainer = $('#timeSlots');
+            var labelTimeSlots = $('<label>', {
+                for: 'timeSlot',
+                text: 'Time Slots',
+                class: 'block text-base font-medium text-[#07074D] dark:text-white',
+            });
+            timeSlotsContainer.empty();
+            timeSlotsContainer.append(labelTimeSlots);
+
+            var interval = 60 * 60 * 1000;
+            for (var currentTime = startWork; currentTime < endWork; currentTime = new Date(currentTime.getTime() + interval)) {
+                
+                var radioBtn = $('<input>', {
+                    type: 'radio',
+                    name: 'timeSlot',
+                    value: currentTime.toISOString().slice(11, 16),
+                    id: 'timeSlot_' + currentTime.toISOString().slice(11, 16).replace(/:/g, ''),
+                });
+
+                var label = $('<label>', {
+                    for: 'timeSlot_' + currentTime.toISOString().slice(11, 16).replace(/:/g, ''),
+                    text: currentTime.toISOString().slice(11, 16),
+                    class: 'pr-5',
+                });
+
+                timeSlotsContainer.append(radioBtn).append(label);
+            }
+        }
     });
 });
 

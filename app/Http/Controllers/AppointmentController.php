@@ -48,11 +48,6 @@ class AppointmentController extends Controller
         return response()->json($availableDoctors);
     }
 
-    public function getDoctor($id)
-    {
-        return response()->json(Doctor::find($id));
-    }
-
     public function makeAppointment(Request $request): RedirectResponse
     {
         try {

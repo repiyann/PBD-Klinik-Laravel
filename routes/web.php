@@ -35,8 +35,6 @@ Route::middleware('auth')->group(function () {
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::controller(AppointmentController::class)->group(function () {
-        // Route::get('dashboard', 'showRecord')->name('dashboard');
-        Route::get('dashboard/doctors/{id}', 'getDoctor');
         Route::get('dashboard/records/{id}', 'getRecordData');
         Route::get('dashboard', 'showRecordAndDoctor')->name('dashboard');
         Route::get('dashboard/{service}', 'getAvailableDates');

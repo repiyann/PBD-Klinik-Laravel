@@ -148,10 +148,7 @@
                             </select>
                         </div>
                         <div class="mb-5">
-                            <label for="slot" class="block text-base font-medium text-[#07074D] dark:text-white">
-                                Time Slots
-                            </label>
-                            <div id="timeSlots" class="flex space-x-4 mt-2 btn-group">
+                            <div id="timeSlots" class="mt-2">
                             </div>
                         </div>
                         <div>
