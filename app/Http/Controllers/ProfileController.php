@@ -30,8 +30,8 @@ class ProfileController extends Controller
                 return redirect()->back()->withErrors($validator, 'errorUpdateProfile')->withInput();
             }
 
-            $user->name = $request->input('name');
-            $user->email = $request->input('email');
+            $user->name = $request->name;
+            $user->email = $request->email;
             $user->save();
 
             return redirect()->back()->with('success', 'Account settings updated successfully.');
@@ -54,11 +54,11 @@ class ProfileController extends Controller
                 return redirect()->back()->withErrors($validator, 'errorUpdatePassword')->withInput();
             }
         
-            if (!Hash::check($request->input('oldPassword'), $user->password)) {
+            if (!Hash::check($request->oldPassword, $user->password)) {
                 return back()->with("errorUpdatePassword", "Current password is wrong!");
             }
 
-            if ($request->input('oldPassword') == $request->input('newPassword')) {
+            if ($request->oldPassword == $request->newPassword) {
                 return back()->with("errorUpdatePassword", "New password cannot be the same as the old password!");
             }
 

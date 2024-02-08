@@ -31,7 +31,7 @@ class AuthController extends Controller
     {
         try {
             $request->validate([
-                'name' => 'required',
+                'name' => 'required|string',
                 'email' => 'required|email|unique:users',
                 'password' => 'required|min:8|confirmed',
             ]);
@@ -54,7 +54,7 @@ class AuthController extends Controller
     public function loginUser(Request $request): RedirectResponse
     {
         $request->validate([
-            'email' => 'required',
+            'email' => 'required|email',
             'password' => 'required|min:8',
         ]);
 

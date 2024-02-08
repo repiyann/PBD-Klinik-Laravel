@@ -33,8 +33,8 @@ class RecordController extends Controller
             $user = Auth::user();
 
             $request->validate([
-                'firstName' => 'required',
-                'lastName' => 'required',
+                'firstName' => 'required|string',
+                'lastName' => 'required|string',
                 'nationalID' => 'required|unique:records,nationalID|min:16',
                 'birthDate' => 'required|date|date_format:Y-m-d',
                 'address' => 'required',
@@ -42,12 +42,12 @@ class RecordController extends Controller
             ]);
 
             $user->records()->create([
-                'firstName' => $request->input('firstName'),
-                'lastName' => $request->input('lastName'),
-                'nationalID' => $request->input('nationalID'),
-                'birthDate' => $request->input('birthDate'),
-                'address' => $request->input('address'),
-                'notes' => $request->input('notes'),
+                'firstName' => $request->firstName,
+                'lastName' => $request->lastName,
+                'nationalID' => $request->nationalID,
+                'birthDate' => $request->birthDate,
+                'address' => $request->address,
+                'notes' => $request->notes,
             ]);
 
             return redirect()->route('viewRecord')->with('success', 'Record added successfully!');
@@ -84,12 +84,12 @@ class RecordController extends Controller
             $record = Record::findOrFail($id);
 
             $record->update([
-                'firstName' => $request->input('firstName'),
-                'lastName' => $request->input('lastName'),
-                'nationalID' => $request->input('nationalID'),
-                'birthDate' => $request->input('birthDate'),
-                'address' => $request->input('address'),
-                'notes' => $request->input('notes'),
+                'firstName' => $request->firstName,
+                'lastName' => $request->lastName,
+                'nationalID' => $request->nationalID,
+                'birthDate' => $request->birthDate,
+                'address' => $request->address,
+                'notes' => $request->notes,
             ]);
 
             return redirect()->route('viewRecord')->with('success', 'Record updated successfully!');

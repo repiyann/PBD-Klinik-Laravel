@@ -18,11 +18,8 @@ return new class extends Migration
             $table->date('birthDate');
             $table->string('address');
             $table->text('notes')->nullable();
-            $table->unsignedBigInteger('user_id');
-            // $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained();
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
