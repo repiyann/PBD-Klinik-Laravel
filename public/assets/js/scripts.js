@@ -147,7 +147,7 @@ $(document).ready(function () {
                 });
             },
             error: function (error) {
-                console.error('Error checking time slot availability:', error);
+                timeSlotsLabel.append('<div class="w-full bg-red-100 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert"><p>Error Checking Time Slot Availability'+ error +'!</p></div>');
             }
         });
     });
