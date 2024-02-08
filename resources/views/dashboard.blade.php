@@ -148,8 +148,9 @@
                             </select>
                         </div>
                         <div class="mb-5">
-                            <div id="timeSlots" class="mt-2">
+                            <div id="timeSlotsLabel" class="mt-2">
                             </div>
+                            <div id="timeSlots" class="grid grid-cols-2 lg:grid-cols-3 gap-3"></div>
                         </div>
                         <div>
                             <button class="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none">
