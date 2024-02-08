@@ -42,7 +42,8 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::post('check', [AppointmentController::class, 'makeAppointment'])->name('tesCok');
-
+    Route::post('check-timeslot-availability', [AppointmentController::class, 'checkTimeSlotAvailability'])->name('check.timeslot.availability');    
+    
     Route::controller(ProfileController::class)->group(function () {
         Route::get('profile', 'viewProfile')->name('viewProfile');
         Route::post('profile/updateProfile', 'updateProfile')->name('updateProfile');

@@ -25,7 +25,7 @@ $(document).ready(function () {
         });
     });
 
-    $('form').submit(function() {
+    $('form').submit(function () {
         $('#fName').val(data.firstName);
     });
 
@@ -68,7 +68,7 @@ $(document).ready(function () {
             var dayOfWeek = selectedDate.toLocaleDateString('en-GB', { weekday: 'long' });
             $('#workDaysInput').val(dateString);
 
-            const doctorSelect = $('#doctorSelect').empty().append('<option selected disabled> Choose Doctor </option>');
+            $('#doctorSelect').empty().append('<option selected disabled> Choose Doctor </option>');
             $.get('/dashboard/' + service + '/' + dayOfWeek, function (data) {
                 doctorData = data;
                 $('#timeSlotsLabel, #timeSlots').empty();
@@ -92,40 +92,64 @@ $(document).ready(function () {
     });
 
     $('#doctorSelect').change(function () {
-        const selectedDoctorID = $(this).val();
-        const selectedDoctor = doctorData.find(doctor => doctor.id == selectedDoctorID);
+        const data = {
+            clinicService: $('#clinicService').val(),
+            dateAvailable: $('#hiddenDateInput').val(),
+            doctorID: $(this).val(),
+        };
 
-        if (selectedDoctor) {
-            var startWork = new Date('1970-01-01T' + selectedDoctor.start_work + 'Z');
-            var endWork = new Date('1970-01-01T' + selectedDoctor.end_work + 'Z');
+        $.ajax({
+            url: '/check-timeslot-availability/',
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (response) {
+                console.log('Response:', response);
 
-            const timeSlotsLabel = $('#timeSlotsLabel').empty().append($('<label>', {
-                for: 'timeSlot',
-                text: 'Time Slots',
-                class: 'block text-base font-medium text-[#07074D] dark:text-white',
-            }));
-            const timeSlots = $('#timeSlots').empty();
+                $('#timeSlotsLabel').empty().append($('<label>', {
+                    for: 'timeSlot',
+                    text: 'Time Slots',
+                    class: 'block text-base font-medium text-[#07074D] dark:text-white',
+                }));
+                const timeSlotsDiv = $('#timeSlots').empty();
 
-            const interval = 60 * 60 * 1000;
-            for (let currentTime = startWork; currentTime < endWork; currentTime = new Date(currentTime.getTime() + interval)) {
-                const formattedTime = currentTime.toISOString().slice(11, 16);
+                const currentTime = new Date();
+                const options = { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Jakarta' };
+                const currentFormattedTime = currentTime.toLocaleTimeString('id-ID', options);
+                const currentDate = currentTime.toLocaleDateString('id-ID');
+                const dateAvailable = new Date($('#hiddenDateInput').val()).toLocaleDateString('id-ID');
 
-                const radioBtn = $('<input>', {
-                    type: 'radio',
-                    name: 'timeSlot',
-                    value: formattedTime,
-                    id: `timeSlot_${formattedTime.replace(/:/g, '')}`,
+                let noSlotMessageAdded = false;
+
+                response.availableTimeSlots.forEach(function (formattedTime) {
+                    if (currentDate === dateAvailable && formattedTime <= currentFormattedTime && !noSlotMessageAdded) {
+                        timeSlotsDiv.append('<div class="bg-red-100 mb-5 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert"><p>No Slot for Appointment!</p></div>');
+                        noSlotMessageAdded = true;
+                    } else if (formattedTime > currentFormattedTime || currentDate !== dateAvailable) {
+                        const formattedTimeHi = formattedTime.slice(0, 5);
+
+                        const radioBtn = $('<input>', {
+                            type: 'radio',
+                            name: 'timeSlot',
+                            value: formattedTimeHi,
+                            id: `timeSlot_${formattedTime.replace(/:/g, '')}`,
+                        });
+
+                        const label = $('<label>', {
+                            for: `timeSlot_${formattedTime.replace(/:/g, '')}`,
+                            text: formattedTimeHi,
+                            class: 'pr-5',
+                        });
+
+                        timeSlotsDiv.append($('<div>').append(radioBtn, label));
+                    }
                 });
-                const label = $('<label>', {
-                    for: `timeSlot_${formattedTime.replace(/:/g, '')}`,
-                    text: formattedTime,
-                    class: 'pr-5',
-                });
-
-                const div = $('<div>').append(radioBtn).append(label);
-                timeSlots.append(div);
+            },
+            error: function (error) {
+                console.error('Error checking time slot availability:', error);
             }
-        }
+        });
     });
 });
 
