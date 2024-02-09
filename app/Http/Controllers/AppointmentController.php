@@ -101,12 +101,11 @@ class AppointmentController extends Controller
     {
         try {
             $user = Auth::user();
+            $userHasRecord = Record::where('user_id', $user->id)->exists();
 
-            $request->validate([
-                'recordOption' => 'required|string|in:new,existing',
+            $rules = [
                 'fName' => 'required|string',
                 'lastName' => 'required|string',
-                'nik' => ($request->recordOption == 'new') ? 'required|string|min:16|unique:records,nationalID' : 'nullable',
                 'dateOfBirth' => 'required|date|date_format:Y-m-d',
                 'address' => 'required',
                 'notes' => 'nullable',
@@ -114,9 +113,20 @@ class AppointmentController extends Controller
                 'dateAvailable' => 'required|date',
                 'doctorSelect' => 'required|numeric',
                 'timeSlot' => 'required|date_format:H:i',
-            ]);
+            ];
 
-            if ($request->recordOption == 'new') {
+            if ($userHasRecord) {
+                $rules['recordOption'] = 'required|string|in:new,existing';
+                if ($request->input('recordOption') == 'new') {
+                    $rules['nik'] = 'required|string|min:16|unique:records,nationalID';
+                } else {
+                    $rules['existingRecord'] = 'required';
+                }
+            }
+
+            $request->validate($rules);
+
+            if ($userHasRecord && $request->recordOption == 'new') {
                 $record = $user->records()->create([
                     'firstName' => $request->fName,
                     'lastName' => $request->lastName,
@@ -135,9 +145,28 @@ class AppointmentController extends Controller
                     'doctor_id' => $request->doctorSelect,
                     'timeSlot' => $request->timeSlot,
                 ]);
-            } else {
+            } elseif ($userHasRecord && $request->recordOption == 'existing') {
                 $user->appointment()->create([
                     'record_id' => $request->existingRecord,
+                    'firstName' => $request->fName,
+                    'lastName' => $request->lastName,
+                    'clinicService' => $request->clinicService,
+                    'dateAvailable' => $request->dateAvailable,
+                    'doctor_id' => $request->doctorSelect,
+                    'timeSlot' => $request->timeSlot,
+                ]);
+            } else {
+                $record = $user->records()->create([
+                    'firstName' => $request->fName,
+                    'lastName' => $request->lastName,
+                    'nationalID' => $request->nik,
+                    'birthDate' => $request->dateOfBirth,
+                    'address' => $request->address,
+                    'notes' => $request->notes,
+                ]);
+
+                $user->appointment()->create([
+                    'record_id' => $record->id,
                     'firstName' => $request->fName,
                     'lastName' => $request->lastName,
                     'clinicService' => $request->clinicService,
