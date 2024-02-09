@@ -14,9 +14,9 @@
             @endif
 
             <section id="account-info" class="tab-content card dark:bg-gray-700">
-                <form action="{{ route('updateProfile') }}" method="POST">
+                <form action="{{ route('updateProfile') }}" autocomplete="off" method="POST">
                     @csrf
-                    @method('POST')
+                    @method('PUT')
                     <div class="-mx-3 flex flex-wrap">
                         <p class="w-full px-3 text-lg font-semibold dark:text-white">Profile Information</p>
                         <p class="w-full px-3 mb-6 dark:text-white">Update your account's profile information and email address.</p>
@@ -24,6 +24,12 @@
                         @if ($errors->errorUpdateProfile->any())
                         <div class="bg-red-100 mb-5 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert">
                             <p>{{ $errors->errorUpdateProfile->first() }}</p>
+                        </div>
+                        @endif
+
+                        @if (session('success'))
+                        <div class="bg-green-100 mb-5 border border-green-400 text-green-700 px-4 py-3 mt-3 rounded relative" role="alert">
+                            <p>{{ session('success') }}</p>
                         </div>
                         @endif
 
@@ -43,6 +49,14 @@
                                 <input type="email" name="email" id="email" placeholder="Email" value="{{ old('email', Auth::user()->email) }}" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
                             </div>
                         </div>
+                        <div class="w-full px-3">
+                            <div class="mb-5">
+                                <label for="currentPassword" class="block text-base font-medium text-[#07074D] dark:text-white">
+                                    Confirm Your Password
+                                </label>
+                                <input type="password" name="oldPassword" id="currentPassword" autocomplete="off" placeholder="Confirm Password" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
+                            </div>
+                        </div>
                     </div>
 
                     <div>
@@ -56,9 +70,15 @@
             <section id="update-password" class="tab-content card dark:bg-gray-700">
                 <form action="{{ route('updatePassword') }}" method="POST">
                     @csrf
-                    @method('POST')
+                    @method('PUT')
                     <p class="w-full text-lg font-semibold dark:text-white">Update Password</p>
                     <p class="w-full mb-6 dark:text-white">Ensure your account is using a long, random password to stay secure.</p>
+
+                    @if ($errors->any())
+                    <div class="bg-red-100 mb-5 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert">
+                        <p>{{ $errors->first() }}</p>
+                    </div>
+                    @endif
 
                     @if (session('errorUpdatePassword'))
                     <div class="bg-red-100 mb-5 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert">
@@ -66,23 +86,29 @@
                     </div>
                     @endif
 
+                    @if (session('success'))
+                    <div class="bg-green-100 mb-5 border border-green-400 text-green-700 px-4 py-3 mt-3 rounded relative" role="alert">
+                        <p>{{ session('success') }}</p>
+                    </div>
+                    @endif
+
                     <div class="mb-5">
-                        <label for="password" class="block text-base font-medium text-[#07074D] dark:text-white">
+                        <label for="currentPassword" class="block text-base font-medium text-[#07074D] dark:text-white">
                             Current Password
                         </label>
-                        <input type="password" name="oldPassword" id="current_password" placeholder="Current Password" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
+                        <input type="password" name="oldPassword" id="currentPassword" placeholder="Current Password" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
                     </div>
                     <div class="mb-5">
                         <label for="newPassword" class="block text-base font-medium text-[#07074D] dark:text-white">
                             New Password
                         </label>
-                        <input type="password" name="newPassword" id="new_password" placeholder="New Password" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
+                        <input type="password" name="newPassword" id="newPassword" placeholder="New Password" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
                     </div>
                     <div class="mb-5">
-                        <label for="password_confirmation" class="block text-base font-medium text-[#07074D] dark:text-white">
+                        <label for="confirm_newPassword" class="block text-base font-medium text-[#07074D] dark:text-white">
                             Confirm New Password
                         </label>
-                        <input type="password" name="newPassword_confirmation" id="new_password" placeholder="New Password" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
+                        <input type="password" name="newPassword_confirmation" id="confirm_newPassword" placeholder="New Password" class="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-4 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
                     </div>
 
                     <div>
@@ -103,9 +129,9 @@
                         <p class="text-base font-medium text-[#6B7280] dark:text-white">Are you sure you want to delete your account?</p>
                     </div>
 
-                    @if ($errors->any())
+                    @if (session('errorDelete'))
                     <div class="bg-red-100 mb-5 border border-red-400 text-red-700 px-4 py-3 mt-3 rounded relative" role="alert">
-                        <p>{{ $errors->first() }}</p>
+                        <p>{{ session('errorDelete') }}</p>
                     </div>
                     @endif
 

@@ -24,15 +24,18 @@ class ProfileController extends Controller
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+                'oldPassword' => 'required|min:8'
             ]);
 
             if ($validator->fails()) {
-                return redirect()->back()->withErrors($validator, 'errorUpdateProfile')->withInput();
+                return redirect()->back()->withErrors($validator, 'errorUpdateProfile');
+            } else if (!Hash::check($request->oldPassword, $user->password)) {
+                return back()->with("errorUpdateProfile", "Current password is wrong!");
+            } else {
+                $user->name = $request->name;
+                $user->email = $request->email;
+                $user->save();
             }
-
-            $user->name = $request->name;
-            $user->email = $request->email;
-            $user->save();
 
             return redirect()->back()->with('success', 'Account settings updated successfully.');
         } catch (\Exception $e) {
@@ -44,32 +47,26 @@ class ProfileController extends Controller
     {
         try {
             $user = Auth::user();
-        
+
             $validator = Validator::make($request->all(), [
-                'oldPassword' => 'required',
+                'oldPassword' => 'required|min:8',
                 'newPassword' => 'required|min:8|confirmed',
             ]);
-        
+
             if ($validator->fails()) {
-                return redirect()->back()->withErrors($validator, 'errorUpdatePassword')->withInput();
-            }
-        
-            if (!Hash::check($request->oldPassword, $user->password)) {
+                return redirect()->back()->withErrors($validator)->with('errorUpdatePassword');
+            } else if (!Hash::check($request->oldPassword, $user->password)) {
                 return back()->with("errorUpdatePassword", "Current password is wrong!");
-            }
-
-            if ($request->oldPassword == $request->newPassword) {
+            } else if ($request->oldPassword === $request->newPassword) {
                 return back()->with("errorUpdatePassword", "New password cannot be the same as the old password!");
+            } else {
+                $user->update(['password' => Hash::make($request->newPassword)]);
             }
 
-            $user->password = Hash::make($request->newPassword);
-            $user->save();
-        
             return back()->with("success", "Password changed successfully!");
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred while updating the password.');
         }
-        
     }
 
     public function deleteAccount(): RedirectResponse
@@ -80,7 +77,7 @@ class ProfileController extends Controller
 
             return redirect()->route('/')->with('success', 'Account deleted successfully.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred while deleting the account.');
+            return redirect()->back()->with('errorDelete', 'An error occurred while deleting the account.');
         }
     }
 }
