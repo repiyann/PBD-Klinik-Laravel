@@ -45,8 +45,8 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(ProfileController::class)->group(function () {
         Route::get('profile', 'viewProfile')->name('viewProfile');
-        Route::post('profile/updateProfile', 'updateProfile')->name('updateProfile');
-        Route::post('profile/updatePassword', 'updatePassword')->name('updatePassword');
+        Route::put('profile/updateProfile', 'updateProfile')->name('updateProfile');
+        Route::put('profile/updatePassword', 'updatePassword')->name('updatePassword');
         Route::delete('profile/deleteProfile', 'deleteAccount')->name('deleteAccount');
     });
 
