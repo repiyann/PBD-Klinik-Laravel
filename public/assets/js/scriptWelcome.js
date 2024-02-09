@@ -30,12 +30,14 @@ const imageCarousel = () => ({
         this.activeSlide = (this.activeSlide - 1 + this.slides.length) % this.slides.length;
     },
 });
-$('a[href="#menu"], a[href="#about"]').click(event => {
-    event.preventDefault();
-    var target = $(this.hash);
-    $('html, body').animate({
-        scrollTop: target.offset().top
-    }, 1000);
+$(document).ready(function () {
+    $('a[href="#menu"], a[href="#about"]').click(function (event) {
+        event.preventDefault();
+        var target = $(this.hash);
+        $('html, body').animate({
+            scrollTop: target.offset().top
+        }, 1000);
+    });
 });
 function scrollToTop() {
     window.scrollTo({

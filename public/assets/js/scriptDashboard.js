@@ -4,14 +4,13 @@ $(document).ready(function () {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-    // toggle for enabling selection
+
     $('input[name="recordOption"]').change(function () {
         const isExisting = this.value === 'existing';
         $('#existingRecordSection').toggle(isExisting);
         $('#fName').prop('disabled', isExisting);
     });
 
-    // fill input with existing record
     $('#existingRecord').change(function () {
         const selectedRecord = $(this).val();
         $.get('/dashboard/records/' + selectedRecord, function (data) {
@@ -28,7 +27,6 @@ $(document).ready(function () {
         $('#fName').val(data.firstName);
     });
 
-    // clear all selection if select from first
     $('#clinicService').change(function () {
         $('#workDaysInput').val('');
         $('#doctorSelect').empty().append('<option selected disabled> Choose Doctor </option>');
@@ -36,10 +34,6 @@ $(document).ready(function () {
         $('#timeSlots').empty();
     });
 
-    // global data
-    var doctorData;
-
-    // initialize datepicker
     $(function () {
         var daysOfWeekDisabled = [0, 6];
         var datePicker = $("#workDaysInput").datepicker({
@@ -104,8 +98,6 @@ $(document).ready(function () {
             contentType: 'application/json',
             dataType: 'json',
             success: function (response) {
-                console.log('Response:', response);
-
                 const timeSlotsLabel = $('#timeSlotsLabel').empty().append($('<label>', {
                     for: 'timeSlot',
                     text: 'Time Slots',
@@ -118,7 +110,6 @@ $(document).ready(function () {
                 const currentFormattedTime = currentTime.toLocaleTimeString('id-ID', options);
                 const currentDate = currentTime.toLocaleDateString('id-ID');
                 const dateAvailable = new Date($('#hiddenDateInput').val()).toLocaleDateString('id-ID');
-
                 let noSlotMessageAdded = false;
 
                 response.availableTimeSlots.forEach(function (formattedTime) {
