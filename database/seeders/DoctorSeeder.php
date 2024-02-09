@@ -41,6 +41,6 @@ class DoctorSeeder extends Seeder
 
     private function getRandomWorkHour($min, $max)
     {
-        return mt_rand($min, $max - 1);
+        return mt_rand($min, $max);
     }
 }
