@@ -17,8 +17,6 @@ class DoctorSeeder extends Seeder
 
     public function run()
     {
-        Doctor::truncate();
-
         for ($i = 0; $i < 10; $i++) {
             $startWork = $this->getRandomWorkHour(6, 21);
             $maxDuration = min(7, 21 - $startWork); 
