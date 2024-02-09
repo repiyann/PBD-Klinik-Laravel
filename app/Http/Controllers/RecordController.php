@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Record;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class RecordController extends Controller
 {
@@ -18,7 +18,7 @@ class RecordController extends Controller
 
             return view('user.record', compact('records'));
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Unable to fetch records: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Unable to fetch records: '.$e->getMessage()]);
         }
     }
 
@@ -65,7 +65,7 @@ class RecordController extends Controller
 
             return view('user.editRecord', ['record' => $records]);
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Unable to edit record: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Unable to edit record: '.$e->getMessage()]);
         }
     }
 
@@ -108,7 +108,7 @@ class RecordController extends Controller
 
             return redirect()->route('viewRecord')->with('success', 'Record deleted successfully!');
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Unable to delete record: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Unable to delete record: '.$e->getMessage()]);
         }
     }
 }

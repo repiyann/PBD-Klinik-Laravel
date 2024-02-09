@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class AuthController extends Controller
 {
@@ -36,14 +35,14 @@ class AuthController extends Controller
                 'password' => 'required|min:8|confirmed',
             ]);
 
-            $data =  $request->only('name', 'email', 'password');
+            $data = $request->only('name', 'email', 'password');
             User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'password' => Hash::make($data['password'])
+                'password' => Hash::make($data['password']),
             ]);
 
-            return redirect("login")->withSuccess('Great! you have successfully registered');
+            return redirect('login')->withSuccess('Great! you have successfully registered');
         } catch (\Illuminate\Database\QueryException $e) {
             return back()->withErrors(['error' => 'Sorry, we are experiencing technical difficulties. Please try again later.']);
         } catch (\Illuminate\Validation\ValidationException $e) {

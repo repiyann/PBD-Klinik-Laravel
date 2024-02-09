@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Record;
-use App\Models\Doctor;
 use App\Models\Appointment;
-use Illuminate\Http\RedirectResponse;
+use App\Models\Doctor;
+use App\Models\Record;
 use DateInterval;
 use DatePeriod;
 use DateTime;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AppointmentController extends Controller
 {
@@ -23,7 +23,7 @@ class AppointmentController extends Controller
         return view('dashboard', [
             'userHasRecord' => $records->isNotEmpty(),
             'records' => $records,
-            'services' => $services
+            'services' => $services,
         ]);
     }
 
@@ -60,8 +60,8 @@ class AppointmentController extends Controller
             $doctorID = $request->doctorID;
             $selectedDoctor = Doctor::find($doctorID);
 
-            $startWork = new DateTime('1970-01-01T' . $selectedDoctor->start_work . 'Z');
-            $endWork = new DateTime('1970-01-01T' . $selectedDoctor->end_work . 'Z');
+            $startWork = new DateTime('1970-01-01T'.$selectedDoctor->start_work.'Z');
+            $endWork = new DateTime('1970-01-01T'.$selectedDoctor->end_work.'Z');
             $interval = new DateInterval('PT1H');
             $timeSlots = new DatePeriod($startWork, $interval, $endWork);
 
@@ -80,7 +80,7 @@ class AppointmentController extends Controller
                     break;
                 }
 
-                if (!in_array($formattedTime, $existingTimeSlots)) {
+                if (! in_array($formattedTime, $existingTimeSlots)) {
                     $availableTimeSlots[] = $formattedTime;
                 }
             }

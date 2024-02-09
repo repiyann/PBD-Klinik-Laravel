@@ -16,7 +16,7 @@ class Appointment extends Model
         'clinicService',
         'dateAvailable',
         'doctor_id',
-        'timeSlot'
+        'timeSlot',
     ];
 
     public function user()

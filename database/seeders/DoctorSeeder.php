@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Doctor;
 use Faker\Factory as Faker;
+use Illuminate\Database\Seeder;
 
 class DoctorSeeder extends Seeder
 {
@@ -19,15 +19,15 @@ class DoctorSeeder extends Seeder
     {
         for ($i = 0; $i < 10; $i++) {
             $startWork = $this->getRandomWorkHour(6, 21);
-            $maxDuration = min(7, 21 - $startWork); 
+            $maxDuration = min(7, 21 - $startWork);
             $endWork = $this->getRandomWorkHour($startWork + 1, $startWork + $maxDuration);
 
             Doctor::create([
-                'name' => 'Dr. ' . $this->faker->name,
+                'name' => 'Dr. '.$this->faker->name,
                 'service' => $this->faker->randomElement(['Dentist', 'Cardiologist', 'Orthopedic']),
                 'work_days' => json_encode($this->getRandomWorkDays()),
-                'start_work' => $startWork . ':00:00',
-                'end_work' => $endWork . ':00:00',
+                'start_work' => $startWork.':00:00',
+                'end_work' => $endWork.':00:00',
             ]);
         }
     }
@@ -36,6 +36,7 @@ class DoctorSeeder extends Seeder
     {
         $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
         shuffle($days);
+
         return array_slice($days, 0, rand(1, count($days)));
     }
 

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
@@ -23,14 +23,14 @@ class ProfileController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-                'oldPassword' => 'required|min:8'
+                'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
+                'oldPassword' => 'required|min:8',
             ]);
 
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator, 'errorUpdateProfile');
-            } else if (!Hash::check($request->oldPassword, $user->password)) {
-                return back()->with("errorUpdateProfile", "Current password is wrong!");
+            } elseif (! Hash::check($request->oldPassword, $user->password)) {
+                return back()->with('errorUpdateProfile', 'Current password is wrong!');
             } else {
                 $user->name = $request->name;
                 $user->email = $request->email;
@@ -55,15 +55,15 @@ class ProfileController extends Controller
 
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator)->with('errorUpdatePassword');
-            } else if (!Hash::check($request->oldPassword, $user->password)) {
-                return back()->with("errorUpdatePassword", "Current password is wrong!");
-            } else if ($request->oldPassword === $request->newPassword) {
-                return back()->with("errorUpdatePassword", "New password cannot be the same as the old password!");
+            } elseif (! Hash::check($request->oldPassword, $user->password)) {
+                return back()->with('errorUpdatePassword', 'Current password is wrong!');
+            } elseif ($request->oldPassword === $request->newPassword) {
+                return back()->with('errorUpdatePassword', 'New password cannot be the same as the old password!');
             } else {
                 $user->update(['password' => Hash::make($request->newPassword)]);
             }
 
-            return back()->with("success", "Password changed successfully!");
+            return back()->with('success', 'Password changed successfully!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'An error occurred while updating the password.');
         }
