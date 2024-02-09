@@ -6,25 +6,46 @@ $(document).ready(function () {
     });
 
     $('input[name="recordOption"]').change(function () {
-        const isExisting = this.value === 'existing';
-        $('#existingRecordSection').toggle(isExisting);
-        $('#fName').prop('disabled', isExisting);
+        const isNew = this.value === 'new';
+        if (isNew) {
+            $('#firstName').val('');
+            $('#lName').val('');
+            $('#nik').val('');
+            $('#birthdate').val('');
+            $('#address').val('');
+            $('#notes').val('');
+            $('#existingRecordSection').hide();
+        } else {
+            $('#existingRecordSection').show();
+            $('#existingRecord').prop('selectedIndex', 0);
+        }
     });
 
     $('#existingRecord').change(function () {
         const selectedRecord = $(this).val();
         $.get('/dashboard/records/' + selectedRecord, function (data) {
-            $('#firstName').val(data.firstName);
-            $('#lName').val(data.lastName);
-            $('#nik').val(data.nationalID);
-            $('#birthdate').val(data.birthDate);
-            $('#address').val(data.address);
-            $('#notes').val(data.notes);
+            $('#firstName').val(data.firstName).prop('disabled', true);
+            $('#lName').val(data.lastName).prop('disabled', true);
+            $('#nik').val(data.nationalID).prop('disabled', true);
+            $('#birthdate').val(data.birthDate).prop('disabled', true);
+            $('#address').val(data.address).prop('disabled', true);
+            $('#notes').val(data.notes).prop('disabled', true);
+
+            $('#submitFormButton').prop('disabled', false);
+
+            $('form').append(
+                $('<input>', { type: 'hidden', name: 'firstName', value: data.firstName }),
+                $('<input>', { type: 'hidden', name: 'lastName', value: data.lastName }),
+                $('<input>', { type: 'hidden', name: 'nik', value: data.nationalID }),
+                $('<input>', { type: 'hidden', name: 'dateOfBirth', value: data.birthDate }),
+                $('<input>', { type: 'hidden', name: 'address', value: data.address }),
+                $('<input>', { type: 'hidden', name: 'notes', value: data.notes }),
+            );
         });
     });
 
-    $('form').submit(function () {
-        $('#fName').val(data.firstName);
+    $('#submitFormButton').click(function () {
+        $('form').submit();
     });
 
     $('#clinicService').change(function () {

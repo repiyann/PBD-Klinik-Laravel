@@ -34,20 +34,14 @@ class AppointmentController extends Controller
 
     public function getAvailableDates($service)
     {
-        $availableDates = Doctor::where('service', $service)
-            ->pluck('work_days')
-            ->flatten()
-            ->unique()
-            ->values();
+        $availableDates = Doctor::where('service', $service)->pluck('work_days')->flatten()->unique()->values();
 
         return response()->json($availableDates);
     }
 
     public function getAvailableDoctors($service, $selectedDate)
     {
-        $availableDoctors = Doctor::where('service', $service)
-            ->whereJsonContains('work_days', $selectedDate)
-            ->get();
+        $availableDoctors = Doctor::where('service', $service)->whereJsonContains('work_days', $selectedDate)->get();
 
         return response()->json($availableDoctors);
     }
@@ -104,7 +98,7 @@ class AppointmentController extends Controller
             $userHasRecord = Record::where('user_id', $user->id)->exists();
 
             $rules = [
-                'fName' => 'required|string',
+                'firstName' => 'required|string',
                 'lastName' => 'required|string',
                 'dateOfBirth' => 'required|date|date_format:Y-m-d',
                 'address' => 'required',
@@ -128,7 +122,7 @@ class AppointmentController extends Controller
 
             if ($userHasRecord && $request->recordOption == 'new') {
                 $record = $user->records()->create([
-                    'firstName' => $request->fName,
+                    'firstName' => $request->firstName,
                     'lastName' => $request->lastName,
                     'nationalID' => $request->nik,
                     'birthDate' => $request->dateOfBirth,
@@ -138,7 +132,7 @@ class AppointmentController extends Controller
 
                 $user->appointment()->create([
                     'record_id' => $record->id,
-                    'firstName' => $request->fName,
+                    'firstName' => $request->firstName,
                     'lastName' => $request->lastName,
                     'clinicService' => $request->clinicService,
                     'dateAvailable' => $request->dateAvailable,
@@ -148,7 +142,7 @@ class AppointmentController extends Controller
             } elseif ($userHasRecord && $request->recordOption == 'existing') {
                 $user->appointment()->create([
                     'record_id' => $request->existingRecord,
-                    'firstName' => $request->fName,
+                    'firstName' => $request->firstName,
                     'lastName' => $request->lastName,
                     'clinicService' => $request->clinicService,
                     'dateAvailable' => $request->dateAvailable,
@@ -157,7 +151,7 @@ class AppointmentController extends Controller
                 ]);
             } else {
                 $record = $user->records()->create([
-                    'firstName' => $request->fName,
+                    'firstName' => $request->firstName,
                     'lastName' => $request->lastName,
                     'nationalID' => $request->nik,
                     'birthDate' => $request->dateOfBirth,
@@ -167,7 +161,7 @@ class AppointmentController extends Controller
 
                 $user->appointment()->create([
                     'record_id' => $record->id,
-                    'firstName' => $request->fName,
+                    'firstName' => $request->firstName,
                     'lastName' => $request->lastName,
                     'clinicService' => $request->clinicService,
                     'dateAvailable' => $request->dateAvailable,
